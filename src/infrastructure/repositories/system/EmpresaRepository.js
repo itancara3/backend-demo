@@ -75,8 +75,10 @@ module.exports = function empresaRepository (models, Sequelize) {
     query.where = {};
     if (params.id) {
       query.where.id = params.id;
+      console.log(query);
     }
-    const result = await empresa.findOne(query);
+    const result = await empresa.findByPk(query.where.id);
+    console.log(result);
     if (!result) {
       return null;
     }
@@ -85,27 +87,21 @@ module.exports = function empresaRepository (models, Sequelize) {
 
   function existsCompany (params = {}) {
     const query = {};
-    query.attributes = [
-      'numeroDocumento',
-      'nombreEmpresa',
-      'estado'
-    ];
+    query.attributes = ['numeroDocumento', 'nombreEmpresa', 'estado'];
     query.where = {
-      estado: "ACTIVO",
-      numeroDocumento: params.numeroDocumento
+      estado          : 'ACTIVO',
+      numeroDocumento : params.numeroDocumento
     };
     return empresa.findAndCountAll(query);
   }
 
   function idParametroTipoDocNIT () {
     const query = {};
-    query.attributes = [
-      'id'
-    ];
+    query.attributes = ['id'];
     query.where = {
-      estado: "ACTIVO",
-      grupo: 'TIPO_DOCUMENTO_IDENTIDAD',
-      nombre: 'NIT'
+      estado : 'ACTIVO',
+      grupo  : 'TIPO_DOCUMENTO_IDENTIDAD',
+      nombre : 'NIT'
     };
     return parametro.findOne(query);
   }
