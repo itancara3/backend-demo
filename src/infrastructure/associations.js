@@ -50,6 +50,12 @@ module.exports = function associations (models) {
   aplicacion.belongsToMany(permiso, { through: { model: aplicacionPermiso, unique: false }, as: 'permisos', foreignKey: 'idAplicacion' });
   permiso.belongsToMany(aplicacion, { through: { model: aplicacionPermiso, unique: false }, as: 'aplicaciones', foreignKey: 'idPermiso' });
 
+  parametro.belongsTo(parametro, { foreignKey: { name: 'idPadre' }, as: 'parametroPadre' });
+  parametro.hasMany(parametro,  { foreignKey: { name: 'idPadre' }, as: 'parametros' });
+
+  empresa.belongsTo(parametro, { foreignKey: { name: 'idParametro' }, as: 'parametro' });
+  parametro.hasMany(empresa,  { foreignKey: { name: 'idParametro' }, as: 'empresas' });
+
   // Roles de usuario
   usuario.belongsToMany(rol,  { through: { model: rolUsuario, unique: false }, as: 'roles', foreignKey: 'idUsuario' });
   rol.belongsToMany(usuario, { through: { model: rolUsuario, unique: false }, as: 'usuarios', foreignKey: 'idRol' });

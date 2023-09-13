@@ -75,10 +75,10 @@ module.exports = (sequelize, DataTypes) => {
     estado: {
       type         : DataTypes.ENUM,
       allowNull    : false,
-      values       : ['1', '0'],
-      defaultValue : '1',
+      values       : ['ACTIVO', 'INACTIVO'],
+      defaultValue : 'ACTIVO',
       xlabel       : lang.t('fields.estado'),
-      field        : '_estado'
+      field        : 'estado'
     }
   };
 

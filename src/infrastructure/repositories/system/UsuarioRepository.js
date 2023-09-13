@@ -30,7 +30,9 @@ module.exports = function usuariosRepository (models, Sequelize) {
 
     if (params.exclude) {
       query.where.id = {
-        [Op.notIn]: Array.isArray(params.exclude) ? params.exclude : [params.exclude]
+        [Op.notIn]: Array.isArray(params.exclude)
+          ? params.exclude
+          : [params.exclude]
       };
     }
 
@@ -149,15 +151,9 @@ module.exports = function usuariosRepository (models, Sequelize) {
       {
         required   : true,
         through    : { attributes: [] },
-        attributes : [
-          'id',
-          'idEntidad',
-          'nombre',
-          'descripcion',
-          'estado'
-        ],
-        model : rol,
-        as    : 'roles'
+        attributes : ['id', 'idEntidad', 'nombre', 'descripcion', 'estado'],
+        model      : rol,
+        as         : 'roles'
       }
     ];
 
@@ -182,15 +178,9 @@ module.exports = function usuariosRepository (models, Sequelize) {
       {
         required   : true,
         through    : { attributes: [] },
-        attributes : [
-          'id',
-          'idEntidad',
-          'nombre',
-          'descripcion',
-          'estado'
-        ],
-        model : rol,
-        as    : 'roles'
+        attributes : ['id', 'idEntidad', 'nombre', 'descripcion', 'estado'],
+        model      : rol,
+        as         : 'roles'
       }
     ];
 
@@ -229,15 +219,9 @@ module.exports = function usuariosRepository (models, Sequelize) {
       {
         required   : true,
         through    : { attributes: [] },
-        attributes : [
-          'id',
-          'idEntidad',
-          'nombre',
-          'descripcion',
-          'estado'
-        ],
-        model : rol,
-        as    : 'roles'
+        attributes : ['id', 'idEntidad', 'nombre', 'descripcion', 'estado'],
+        model      : rol,
+        as         : 'roles'
       }
     ];
 
@@ -304,7 +288,9 @@ module.exports = function usuariosRepository (models, Sequelize) {
     query.where = {};
 
     if (params.correoElectronico) {
-      Object.assign(query.where, { correoElectronico: params.correoElectronico });
+      Object.assign(query.where, {
+        correoElectronico: params.correoElectronico
+      });
     }
 
     if (params.usuario) {
