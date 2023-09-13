@@ -6,36 +6,54 @@ const util = require('../../lib/util');
 module.exports = (sequelize, DataTypes) => {
   let fields = {
     id    : util.pk,
-    grupo : {
-      type      : DataTypes.STRING(100),
-      allowNull : false,
-      xlabel    : lang.t('fields.grupo')
-    },
     codigo: {
       type      : DataTypes.STRING(50),
       allowNull : false,
       xlabel    : lang.t('fields.codigo')
     },
-    otros: {
-      type      : DataTypes.STRING(100),
-      allowNull : true,
-      xlabel    : lang.t('fields.otros')
+    grupo : {
+      type      : DataTypes.STRING(250),
+      allowNull : false,
+      xlabel    : lang.t('fields.grupo')
     },
     nombre: {
-      type      : DataTypes.STRING(100),
-      allowNull : false,
+      type      : DataTypes.STRING(1000),
+      allowNull : true,
       xlabel    : lang.t('fields.nombre')
     },
     descripcion: {
-      type      : DataTypes.TEXT,
+      type      : DataTypes.STRING(1000),
       allowNull : true,
       xlabel    : lang.t('fields.descripcion')
     },
+    tipo: {
+      type      : DataTypes.STRING(10),
+      allowNull : true,
+      xlabel    : lang.t('fields.tipo')
+    },
+    ruta: {
+      type      : DataTypes.STRING(250),
+      allowNull : true,
+      xlabel    : lang.t('fields.ruta')
+    },
+    otros: {
+      type      : DataTypes.STRING(250),
+      allowNull : true,
+      xlabel    : lang.t('fields.otros')
+    },
+    idPadre : {
+      type      : DataTypes.UUID,
+      allowNull : true,
+      xlabel    : lang.t('fields.idPadre'),
+      field     : 'id_padre'
+    },
     estado: {
-      type   : DataTypes.ENUM,
-      values : ['ACTIVO', 'INACTIVO'],
-      xlabel : lang.t('fields.estado'),
-      field  : 'estado'
+      type         : DataTypes.ENUM,
+      values       : ['ACTIVO', 'INACTIVO'],
+      defaultValue : 'ACTIVO',
+      allowNull    : false,
+      xlabel       : lang.t('fields.estado'),
+      field        : 'estado'
     }
   };
 

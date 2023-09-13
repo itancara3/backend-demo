@@ -42,6 +42,7 @@ module.exports = async function setupApi (app, services) {
   console.log('🚀  ' + chalk.yellow('RUTAS: ') + chalk.redBright('AUTH'));
 
   app.post('/auth/login', controllers.AuthController.login);
+  app.post('/registrar/empresa', controllers.EmpresaController.crear);
 
   console.log('🚀  ' + chalk.yellow('RUTAS: ') + chalk.redBright('AUTH'));
 
