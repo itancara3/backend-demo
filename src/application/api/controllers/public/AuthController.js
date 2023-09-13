@@ -7,14 +7,33 @@ const { Finalizado, HttpCodes } = require('../../../lib/globals');
 module.exports = function setupAuthController (services) {
   const { AuthService } = services;
 
+  async function loginEmpresa (req, res, next) {
+    debug('Metodo ´para loguearse');
+    try {
+      const { usuario, contrasena } = req.body;
+      const respuesta = await AuthService.loginEmpresa(usuario, contrasena, req);
+      return res
+        .status(200)
+        .send(new Respuesta('OK', Finalizado.OK, respuesta));
+    } catch (error) {
+      return res
+        .status(error.httpCode || HttpCodes.userError)
+        .json(new Respuesta(error.message, Finalizado.FAIL));
+    }
+  }
+
   async function login (req, res, next) {
     debug('Metodo ´para loguearse');
     try {
       const { usuario, contrasena } = req.body;
       const respuesta = await AuthService.login(usuario, contrasena, req);
-      return res.status(200).send(new Respuesta('OK', Finalizado.OK, respuesta));
+      return res
+        .status(200)
+        .send(new Respuesta('OK', Finalizado.OK, respuesta));
     } catch (error) {
-      return res.status(error.httpCode || HttpCodes.userError).json(new Respuesta(error.message, Finalizado.FAIL));
+      return res
+        .status(error.httpCode || HttpCodes.userError)
+        .json(new Respuesta(error.message, Finalizado.FAIL));
     }
   }
 
@@ -50,7 +69,11 @@ module.exports = function setupAuthController (services) {
         if (result.data) {
           res.send(result.data);
         } else {
-          return next(new Error('No se pudo realizar la autorización de ingreso al sistema.'));
+          return next(
+            new Error(
+              'No se pudo realizar la autorización de ingreso al sistema.'
+            )
+          );
         }
       } catch (err) {
         return next(err);
@@ -67,7 +90,11 @@ module.exports = function setupAuthController (services) {
       if (result.code === 1) {
         res.send(result.data);
       } else {
-        res.status(412).send({ error: result.data.message || 'No se pudo cerrar correctamente' });
+        res
+          .status(412)
+          .send({
+            error: result.data.message || 'No se pudo cerrar correctamente'
+          });
       }
     } catch (e) {
       return next(e);
@@ -81,11 +108,14 @@ module.exports = function setupAuthController (services) {
       const token = await AuthService.refreshToken(idRol, idUsuario);
       return res.status(200).send(new Respuesta('OK', Finalizado.OK, token));
     } catch (error) {
-      return res.status(400).json(new Respuesta(error.message, Finalizado.FAIL));
+      return res
+        .status(400)
+        .json(new Respuesta(error.message, Finalizado.FAIL));
     }
   }
 
   return {
+    loginEmpresa,
     login,
     logout,
     codigo,

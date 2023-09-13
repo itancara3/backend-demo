@@ -39,10 +39,10 @@ module.exports = function setupEmpresaController (services) {
 
   async function actualizar (req, res) {
     try {
-      debug('actualizando entidad');
+      debug('actualizando empresa');
       const data = req.body;
       data.id = req.params.id;
-      data._user_updated = req.user.id;
+      // data._user_updated = req.user.id;
       const respuesta = await EmpresaService.createOrUpdate(data);
       return res.status(200).send(new Respuesta('OK', Finalizado.OK, respuesta));
     } catch (error) {

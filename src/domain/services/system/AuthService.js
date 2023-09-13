@@ -9,10 +9,23 @@ const { config } = require('../../../common');
 const { iss } = require('../../lib/util');
 const { generateToken } = require('../../../application/lib/auth');
 const moment = require('moment');
+const EmpresaRepository = require('../../../infrastructure/repositories/system/EmpresaRepository');
 
 module.exports = function authService (repositories, helpers, res) {
-  const { AuthRepository, UsuarioRepository, SuscripcionRepository, EntidadRepository, ParametroRepository, MenuRepository, PermisoRepository } = repositories;
-  const UsuarioService = require('./UsuarioService')(repositories, helpers, res);
+  const {
+    AuthRepository,
+    UsuarioRepository,
+    SuscripcionRepository,
+    EntidadRepository,
+    ParametroRepository,
+    MenuRepository,
+    PermisoRepository
+  } = repositories;
+  const UsuarioService = require('./UsuarioService')(
+    repositories,
+    helpers,
+    res
+  );
   const issuer = new Issuer(iss);
 
   const cliente = new issuer.Client(config.openid.client);
@@ -24,11 +37,14 @@ module.exports = function authService (repositories, helpers, res) {
     const nonce = crypto.randomBytes(16).toString('hex');
 
     try {
-      const authorizationRequest = Object.assign({
-        redirect_uri: config.openid.client.redirect_uris[0],
-        state,
-        nonce
-      }, config.openid.client_params);
+      const authorizationRequest = Object.assign(
+        {
+          redirect_uri: config.openid.client.redirect_uris[0],
+          state,
+          nonce
+        },
+        config.openid.client_params
+      );
 
       const authorizeUrl = cliente.authorizationUrl(authorizationRequest);
 
@@ -71,19 +87,30 @@ module.exports = function authService (repositories, helpers, res) {
       const resultadoState = await AuthRepository.findOne(parametros);
       if (resultadoState) {
         // obtenemos el code
-        const respuestaCode = await cliente.callback(cliente.redirect_uris[0], params, {
-          nonce : resultadoState.parametros.nonce,
-          state : resultadoState.state
-        });
+        const respuestaCode = await cliente.callback(
+          cliente.redirect_uris[0],
+          params,
+          {
+            nonce : resultadoState.parametros.nonce,
+            state : resultadoState.state
+          }
+        );
 
         resultadoState.tokens = respuestaCode;
 
         const claims = await cliente.userinfo(respuestaCode.access_token);
 
-        claims.fecha_nacimiento = moment(claims.fecha_nacimiento, 'DD/MM/YYYY').format('YYYY-MM-DD');
-        if (/[a-z]/i.test(claims.profile.documento_identidad.numero_documento)) {
-          claims.profile.documento_identidad.complemento = claims.profile.documento_identidad.numero_documento.slice(-2);
-          claims.profile.documento_identidad.numero_documento = claims.profile.documento_identidad.numero_documento.slice(0, -2);
+        claims.fecha_nacimiento = moment(
+          claims.fecha_nacimiento,
+          'DD/MM/YYYY'
+        ).format('YYYY-MM-DD');
+        if (
+          /[a-z]/i.test(claims.profile.documento_identidad.numero_documento)
+        ) {
+          claims.profile.documento_identidad.complemento =
+            claims.profile.documento_identidad.numero_documento.slice(-2);
+          claims.profile.documento_identidad.numero_documento =
+            claims.profile.documento_identidad.numero_documento.slice(0, -2);
         }
         // console.log('-------------------------------claims', claims);
         const dataPersona = {
@@ -92,7 +119,10 @@ module.exports = function authService (repositories, helpers, res) {
           fechaNacimiento : claims.fecha_nacimiento
         };
 
-        if (claims.profile.documento_identidad.complemento) dataPersona.complemento = claims.profile.documento_identidad.complemento;
+        if (claims.profile.documento_identidad.complemento) {
+          dataPersona.complemento =
+            claims.profile.documento_identidad.complemento;
+        }
 
         const data = await UsuarioRepository.findByCi(dataPersona);
         if (data) {
@@ -103,13 +133,16 @@ module.exports = function authService (repositories, helpers, res) {
             resultadoState.estado = 'ACTIVO';
             // resultadoState.token = respuesta.token;
             await AuthRepository.createOrUpdate(resultadoState);
-          } else { // usuario inactivo
+          } else {
+            // usuario inactivo
             respuesta = {
               url     : getUrl(resultadoState),
-              mensaje : 'El usuario no esta ACTIVO en el sistema. Consulte con el administrador del sistema.'
+              mensaje :
+                'El usuario no esta ACTIVO en el sistema. Consulte con el administrador del sistema.'
             };
           }
-        } else { // no tiene acceso al sistema
+        } else {
+          // no tiene acceso al sistema
           respuesta = {
             url     : getUrl(resultadoState),
             mensaje : `La persona ${claims.profile.nombre.nombres} no tiene acceso al sistema. Consulte con el administrador del sistema.`
@@ -117,7 +150,11 @@ module.exports = function authService (repositories, helpers, res) {
         }
         return res.success(respuesta);
       } else {
-        return res.warning(new Error('Los códigos de verificacion no coenciden. Intente nuevamente.'));
+        return res.warning(
+          new Error(
+            'Los códigos de verificacion no coenciden. Intente nuevamente.'
+          )
+        );
       }
     } catch (e) {
       return res.error(e);
@@ -170,31 +207,32 @@ module.exports = function authService (repositories, helpers, res) {
   }
 
   function getUrl (data) {
-    return url.format(Object.assign(url.parse(issuer.end_session_endpoint), {
-      search : null,
-      query  : {
-        id_token_hint            : data.tokens.id_token,
-        post_logout_redirect_uri : cliente.post_logout_redirect_uris[0]
-      }
-    }));
+    return url.format(
+      Object.assign(url.parse(issuer.end_session_endpoint), {
+        search : null,
+        query  : {
+          id_token_hint            : data.tokens.id_token,
+          post_logout_redirect_uri : cliente.post_logout_redirect_uris[0]
+        }
+      })
+    );
   }
 
   async function verificarPermisos (params) {
     try {
       const permisos = await PermisoRepository.verificarPermisos(params);
       return permisos;
-    } catch (error) {
-    }
+    } catch (error) {}
   }
 
   async function getMenusRoles (roles) {
-    const idRoles = roles.map(x => x.id);
+    const idRoles = roles.map((x) => x.id);
     const { rows } = await MenuRepository.findByRoles(idRoles);
     return rows;
   }
 
   async function getPermisos (roles) {
-    const idRoles = roles.map(x => x.id);
+    const idRoles = roles.map((x) => x.id);
     const { rows } = await PermisoRepository.findByRoles(idRoles);
     const permisos = {};
     for (const permiso of rows) {
@@ -209,7 +247,7 @@ module.exports = function authService (repositories, helpers, res) {
       usuario.permisos = await getPermisos(usuario.roles);
 
       usuario.token = await generateToken(ParametroRepository, {
-        idRoles           : usuario.roles.map(x => x.id),
+        idRoles           : usuario.roles.map((x) => x.id),
         idUsuario         : usuario.id,
         celular           : usuario.celular,
         correoElectronico : usuario.correoElectronico,
@@ -229,12 +267,15 @@ module.exports = function authService (repositories, helpers, res) {
       if (!existeUsuario) {
         throw new Error('No existe el usuario.');
       }
-      const respuestaVerificacion = await AuthRepository.verificarContrasena(contrasena, existeUsuario.contrasena);
+      const respuestaVerificacion = await AuthRepository.verificarContrasena(
+        contrasena,
+        existeUsuario.contrasena
+      );
       if (!respuestaVerificacion) {
         throw new Error('Error en su usuario o su contraseña.');
       }
       delete existeUsuario.contrasena;
-      const respuesta = await  getResponse(existeUsuario);
+      const respuesta = await getResponse(existeUsuario);
       await AuthRepository.deleteItemCond({ idUsuario: existeUsuario.id });
       await AuthRepository.createOrUpdate({
         ip          : request.ipInfo.ip,
@@ -242,8 +283,39 @@ module.exports = function authService (repositories, helpers, res) {
         userAgent   : request.headers['user-agent'],
         token       : respuesta.token,
         idUsuario   : existeUsuario.id,
-        idRol       : existeUsuario.roles.map(x => x.id).join(','),
+        idRol       : existeUsuario.roles.map((x) => x.id).join(','),
         idEntidad   : existeUsuario.entidad.id,
+        userCreated : existeUsuario.id
+      });
+      return respuesta;
+    } catch (err) {
+      throw new ErrorApp(err.message, 400);
+    }
+  }
+
+  async function loginEmpresa (empresa, contrasena, request) {
+    try {
+      const existeUsuario = await EmpresaRepository.loginEmpresa({ empresa });
+      if (!existeUsuario) {
+        throw new Error('No existe el usuario.');
+      }
+      const respuestaVerificacion = await AuthRepository.verificarContrasena(
+        contrasena,
+        existeUsuario.contrasena
+      );
+      if (!respuestaVerificacion) {
+        throw new Error('Error en su usuario o su contraseña.');
+      }
+      delete existeUsuario.contrasena;
+      const respuesta = await getResponse(existeUsuario);
+      await AuthRepository.deleteItemCond({ idUsuario: existeUsuario.id });
+      await AuthRepository.createOrUpdate({
+        ip          : request.ipInfo.ip,
+        navegador   : request.ipInfo.navigator,
+        userAgent   : request.headers['user-agent'],
+        token       : respuesta.token,
+        idUsuario   : existeUsuario.id,
+        idRol       : existeUsuario.roles.map((x) => x.id).join(','),
         userCreated : existeUsuario.id
       });
       return respuesta;
@@ -262,6 +334,7 @@ module.exports = function authService (repositories, helpers, res) {
     getMenusRoles,
     verificarPermisos,
     login,
+    loginEmpresa,
     getCode,
     refreshToken,
     authorizate,
