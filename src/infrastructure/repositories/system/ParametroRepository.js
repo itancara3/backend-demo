@@ -6,7 +6,7 @@ const Repository = require('../Repository');
 module.exports = function ParametroRepository (models, Sequelize) {
   const { parametro } = models;
   const Op = Sequelize.Op;
-  const attributes = ['id', 'codigo', 'grupo', 'nombre', 'descripcion', 'otros', 'estado'];
+  const attributes = ['id', 'codigo', 'grupo', 'nombre', 'descripcion', 'tipo', 'ruta', 'otros', 'idPadre', 'estado'];
 
   function findAll (params = {}) {
     const query = getQuery(params);
