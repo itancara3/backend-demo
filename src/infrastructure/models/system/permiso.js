@@ -5,23 +5,21 @@ const util = require('../../lib/util');
 
 module.exports = (sequelize, DataTypes) => {
   let fields = {
-    id     : util.pk,
-    nombre : {
-      type      : DataTypes.STRING(100),
-      allowNull : false,
-      xlabel    : lang.t('fields.nombre')
+    id    : util.pk,
+    idRol : {
+      type   : DataTypes.UUID,
+      xlabel : lang.t('fields.idRol'),
+      field  : 'id_rol'
     },
-    descripcion: {
-      type      : DataTypes.TEXT,
-      allowNull : true,
-      xlabel    : lang.t('fields.descripcion')
+    idMenu: {
+      type   : DataTypes.UUID,
+      xlabel : lang.t('fields.idMenu'),
+      field  : 'id_menu'
     },
-    tipo: {
-      type         : DataTypes.ENUM,
-      values       : ['SISTEMA', 'INTEROPERABILIDAD'],
-      defaultValue : 'SISTEMA',
-      allowNull    : false,
-      xlabel       : lang.t('fields.tipo')
+    acceso: {
+      type   : DataTypes.BOOLEAN,
+      xlabel : lang.t('fields.acceso'),
+      field  : 'acceso'
     },
     estado: {
       type   : DataTypes.ENUM,
@@ -37,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
   const Permiso = sequelize.define('permiso', fields, {
     paranoid   : true,
     timestamps : true,
-    tableName  : 'sys_permiso'
+    tableName  : 'user_permiso'
   });
 
   return Permiso;

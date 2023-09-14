@@ -6,58 +6,47 @@ const util = require('../../lib/util');
 module.exports = (sequelize, DataTypes) => {
   let fields = {
     id        : util.pk,
-    idEntidad : {
+    idEmpresa : {
       type   : DataTypes.UUID,
-      xlabel : lang.t('fields.idEntidad'),
-      field  : 'id_entidad'
+      xlabel : lang.t('fields.idEmpresa'),
+      field  : 'id_empresa'
     },
-    tipoDocumento: {
-      type   : DataTypes.STRING(15),
-      xlabel : lang.t('fields.tipoDocumento'),
-      field  : 'tipo_documento'
+    idRol: {
+      type   : DataTypes.UUID,
+      xlabel : lang.t('fields.idRol'),
+      field  : 'id_rol'
     },
-    numeroDocumento: {
-      type   : DataTypes.STRING(15),
-      xlabel : lang.t('fields.numeroDocumento'),
-      field  : 'numero_documento'
+    idTipoDocumento: {
+      type   : DataTypes.UUID,
+      xlabel : lang.t('fields.idTipoDocumento'),
+      field  : 'id_tipo_documento'
     },
-    complemento: {
-      type         : DataTypes.STRING(3),
-      defaultValue : null,
-      xlabel       : lang.t('fields.complemento'),
-      field        : 'complemento'
+    nroDocumento: {
+      type   : DataTypes.STRING(20),
+      xlabel : lang.t('fields.nroDocumento'),
+      field  : 'nro_documento'
+    },
+    nombres: {
+      type      : DataTypes.STRING(80),
+      allowNull : false,
+      xlabel    : lang.t('fields.nombres'),
+      field     : 'nombres'
+    },
+    apellidos: {
+      type      : DataTypes.STRING(150),
+      allowNull : false,
+      xlabel    : lang.t('fields.apellidos'),
+      field     : 'apellidos'
     },
     fechaNacimiento: {
       type   : DataTypes.DATEONLY,
       xlabel : lang.t('fields.fechaNacimiento'),
       field  : 'fecha_nacimiento'
     },
-    usuario: {
-      type   : DataTypes.STRING(100),
-      unique : true,
-      xlabel : lang.t('fields.usuario')
-    },
     contrasena: {
-      type      : DataTypes.STRING(500),
+      type      : DataTypes.STRING(150),
       allowNull : true,
       xlabel    : lang.t('fields.contrasena')
-    },
-    nombres: {
-      type      : DataTypes.STRING(100),
-      allowNull : false,
-      xlabel    : lang.t('fields.nombres'),
-      field     : 'nombres'
-    },
-    primerApellido: {
-      type      : DataTypes.STRING(100),
-      allowNull : false,
-      xlabel    : lang.t('fields.primerApellido'),
-      field     : 'primer_apellido'
-    },
-    segundoApellido: {
-      type   : DataTypes.STRING(100),
-      xlabel : lang.t('fields.segundoApellido'),
-      field  : 'segundo_apellido'
     },
     telefono: {
       type      : DataTypes.STRING(50),
@@ -65,29 +54,74 @@ module.exports = (sequelize, DataTypes) => {
       xlabel    : lang.t('fields.telefono'),
       field     : 'telefono'
     },
-    celular: {
-      type      : DataTypes.STRING(50),
-      allowNull : true,
-      xlabel    : lang.t('fields.celular'),
-      field     : 'celular'
-    },
-    correoElectronico: {
+    email: {
       type      : DataTypes.STRING(100),
       allowNull : false,
-      xlabel    : lang.t('fields.correoElectronico'),
-      field     : 'correo_electronico'
+      xlabel    : lang.t('fields.email'),
+      field     : 'email'
+    },
+    direccion: {
+      type   : DataTypes.STRING(250),
+      xlabel : lang.t('fields.direccion'),
+      field  : 'dirrecion'
+    },
+    ciudad: {
+      type   : DataTypes.STRING(100),
+      xlabel : lang.t('fields.ciudad'),
+      field  : 'ciudad'
+    },
+    provinciaEstado: {
+      type   : DataTypes.STRING(100),
+      xlabel : lang.t('fields.provinciaEstado'),
+      field  : 'provincia_estado'
+    },
+    pais: {
+      type   : DataTypes.STRING(100),
+      xlabel : lang.t('fields.pais'),
+      field  : 'pais'
+    },
+    codigoPostal: {
+      type   : DataTypes.STRING(10),
+      xlabel : lang.t('fields.codigoPostal'),
+      field  : 'codigo_postal'
     },
     cargo: {
-      type      : DataTypes.STRING(500),
+      type      : DataTypes.STRING(150),
       allowNull : false,
       xlabel    : lang.t('fields.cargo'),
       field     : 'cargo'
     },
-    foto: {
-      type      : DataTypes.TEXT,
+    tipo: {
+      type   : DataTypes.ENUM,
+      values : 'venta',
+      xlabel : lang.t('fields.tipo'),
+      field  : 'tipo'
+    },
+    numeroFiscal: {
+      type   : DataTypes.STRING(30),
+      xlabel : lang.t('fields.numeroFiscal'),
+      field  : 'numero_fiscal'
+    },
+    nombreFiscal: {
+      type   : DataTypes.STRING(250),
+      xlabel : lang.t('fields.nombreFiscal'),
+      field  : 'nombre_fiscal'
+    },
+    imagenUrl: {
+      type      : DataTypes.STRING(200),
       allowNull : true,
-      xlabel    : lang.t('fields.foto'),
-      field     : 'foto'
+      xlabel    : lang.t('fields.imagenUrl'),
+      field     : 'imagen_url'
+    },
+    colorFondo: {
+      type   : DataTypes.STRING(25),
+      xlabel : lang.t('fields.colorFondo'),
+      field  : 'color_fondo'
+    },
+    colorTexto: {
+      type   : DataTypes.STRING(25),
+      xlabel : lang.t('fields.colorTexto'),
+      field  : 'color_texto'
     },
     estado: {
       type         : DataTypes.ENUM,
@@ -105,7 +139,7 @@ module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('usuario', fields, {
     paranoid   : true,
     timestamps : true,
-    tableName  : 'sys_usuario'
+    tableName  : 'user_usuario'
   });
 
   return User;

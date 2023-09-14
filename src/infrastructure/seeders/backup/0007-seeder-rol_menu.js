@@ -46,7 +46,7 @@ items = setTimestampsSeeder(items);
 module.exports = {
   up (queryInterface, Sequelize) {
     return queryInterface
-      .bulkInsert('user_permiso', items, {})
+      .bulkInsert('sys_rol_menu', items, {})
       .then(async () => {})
       .catch((error) => {
         if (error.message.indexOf('already exists') > -1) return;

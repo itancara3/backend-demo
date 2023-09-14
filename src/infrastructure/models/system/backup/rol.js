@@ -1,16 +1,16 @@
 'use strict';
 
-const lang = require('../../lang');
-const util = require('../../lib/util');
+const lang = require('../../../lang'); // quitar --> '../'
+const util = require('../../../lib/util'); // quitar --> '../'
 
 module.exports = (sequelize, DataTypes) => {
   let fields = {
     id        : util.pk,
-    idEmpresa : {
+    idEntidad : {
       type      : DataTypes.UUID,
       allowNull : false,
-      xlabel    : lang.t('fields.idEmpresa'),
-      field     : 'id_empresa'
+      xlabel    : lang.t('fields.idEntidad'),
+      field     : 'id_entidad'
     },
     nombre: {
       type      : DataTypes.STRING(50),
@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
   const Rol = sequelize.define('rol', fields, {
     paranoid   : true,
     timestamps : true,
-    tableName  : 'user_rol'
+    tableName  : 'sys_rol'
   });
 
   return Rol;

@@ -75,10 +75,8 @@ module.exports = function empresaRepository (models, Sequelize) {
     query.where = {};
     if (params.id) {
       query.where.id = params.id;
-      console.log(query);
     }
     const result = await empresa.findByPk(query.where.id);
-    console.log(result);
     if (!result) {
       return null;
     }
