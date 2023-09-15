@@ -79,5 +79,11 @@ module.exports = function associations (models) {
   usuario.belongsToMany(Solicitud,  { through: { model: Asignacion, unique: false }, as: 'solicitudes', foreignKey: 'idUsuario' });
   Solicitud.belongsToMany(usuario, { through: { model: Asignacion, unique: false }, as: 'usuarios', foreignKey: 'idSolicitud' });
 
+  // parametro.belongsTo(parametro, { foreignKey: { name: 'idPadre' }, as: 'paramPadre' });
+  // parametro.hasMany(parametro,  { foreignKey: { name: 'idPadre' }, as: 'param' });
+
+  // empresa.hasMany(parametro,  { foreignKey: { name: 'idParametro' }, as: 'parametros' });
+  // parametro.belongsTo(empresa, { foreignKey: { name: 'idParametro' }, as: 'empresa' });
+
   return models;
 };

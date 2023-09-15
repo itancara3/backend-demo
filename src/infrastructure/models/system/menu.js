@@ -20,11 +20,11 @@ module.exports = (sequelize, DataTypes) => {
       xlabel : lang.t('fields.icono'),
       field  : 'icono'
     },
-    idMenu: {
+    idMenuPermiso: {
       type      : DataTypes.UUID,
       allowNull : true,
-      xlabel    : lang.t('fields.idMenu'),
-      field     : 'id_menu'
+      xlabel    : lang.t('fields.idMenuPermiso'),
+      field     : 'id_menu_permiso'
     },
     orden: {
       type         : DataTypes.INTEGER,
@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
   const Menu = sequelize.define('menu', fields, {
     paranoid   : true,
     timestamps : true,
-    tableName  : 'sys_menu'
+    tableName  : 'sys_menu_permiso'
   });
 
   return Menu;

@@ -5,7 +5,14 @@ const moment = require('moment');
 const { generateToken } = require('../../../application/lib/auth');
 
 module.exports = function userService (repositories, helpers, res) {
-  const { UsuarioRepository, RolUsuarioRepository, AuthRepository, RolRepository, transaction, ParametroRepository } = repositories;
+  const {
+    UsuarioRepository,
+    RolUsuarioRepository,
+    AuthRepository,
+    RolRepository,
+    transaction,
+    ParametroRepository
+  } = repositories;
 
   async function listarUsuarios (params) {
     try {
@@ -49,20 +56,21 @@ module.exports = function userService (repositories, helpers, res) {
         throw new Error('El rol seleccionado no existe.');
       }
       idRolSeleccionado = idRolSeleccionado.id;
-      const rolSeleccionado = user.roles.find(x => x.id === idRolSeleccionado);
+      const rolSeleccionado = user.roles.find(
+        (x) => x.id === idRolSeleccionado
+      );
       if (!rolSeleccionado) {
         throw new Error('No tiene asignado el rol que selecciono.');
       }
       const menu = rolSeleccionado.menus;
-      const listaRoles = user.roles.map(x => {
+      const listaRoles = user.roles.map((x) => {
         return {
           id          : x.id,
           nombre      : x.nombre,
-          descripcion : x.descripcion,
+          descripcion : x.descripcion
           // ciudadano   : x.ciudadano,
           // admin       : x.admin
-        }
-        ;
+        };
       });
       // menu = menu.data.menu;
       // Generando token
@@ -105,13 +113,22 @@ module.exports = function userService (repositories, helpers, res) {
         throw new ErrorApp(`No existe el usuario ${usuario}`, 400);
       }
 
-      const respuestaVerificacion = await AuthRepository.verificarContrasena(contrasena, result.contrasena);
+      const respuestaVerificacion = await AuthRepository.verificarContrasena(
+        contrasena,
+        result.contrasena
+      );
       if (!nit && !respuestaVerificacion) {
-        throw new ErrorApp(`La contraseña del usuario ${usuario} es incorrecta`, 400);
+        throw new ErrorApp(
+          `La contraseña del usuario ${usuario} es incorrecta`,
+          400
+        );
       }
 
       if (result.estado === 'INACTIVO') {
-        throw new ErrorApp(`El usuario ${usuario} se encuentra deshabilitado. Consulte con el administrador del sistema.`, 400);
+        throw new ErrorApp(
+          `El usuario ${usuario} se encuentra deshabilitado. Consulte con el administrador del sistema.`,
+          400
+        );
       }
 
       return result;
@@ -132,36 +149,53 @@ module.exports = function userService (repositories, helpers, res) {
       if (data.id) delete data.contrasena;
 
       if (data.contrasena) {
-        data.contrasena = await AuthRepository.codificarContrasena(data.contrasena);
+        data.contrasena = await AuthRepository.codificarContrasena(
+          data.contrasena
+        );
       }
 
-      const existeUsuario = await UsuarioRepository.verificarCorreoElectronico({
-        id                : data.id,
-        correoElectronico : data.correoElectronico,
-        usuario           : data.usuario
-      }, transaccion);
+      const existeUsuario = await UsuarioRepository.verificarCorreoElectronico(
+        {
+          id                : data.id,
+          correoElectronico : data.correoElectronico,
+          usuario           : data.usuario
+        },
+        transaccion
+      );
 
       if (existeUsuario) {
         if (existeUsuario.correoElectronico === data.correoElectronico) {
-          throw new Error(`Ya se encuentra registrado un usuario con el correo electronico "${data.correoElectronico}".`);
+          throw new Error(
+            `Ya se encuentra registrado un usuario con el correo electronico "${data.correoElectronico}".`
+          );
         }
 
         if (existeUsuario.usuario === data.usuario) {
-          throw new Error(`Ya se encuentra registrado un usuario con el nombre de usuario "${data.usuario}".`);
+          throw new Error(
+            `Ya se encuentra registrado un usuario con el nombre de usuario "${data.usuario}".`
+          );
         }
       }
 
-      const usuarioCreado = await UsuarioRepository.createOrUpdate(data, transaccion);
+      const usuarioCreado = await UsuarioRepository.createOrUpdate(
+        data,
+        transaccion
+      );
 
       if (data.roles) {
-        if (data.roles.length === 0) throw new Error('Debe asignar al menos un rol al usuario');
-        await RolUsuarioRepository.deleteItemCond({ idUsuario: usuarioCreado.id });
+        if (data.roles.length === 0) { throw new Error('Debe asignar al menos un rol al usuario'); }
+        await RolUsuarioRepository.deleteItemCond({
+          idUsuario: usuarioCreado.id
+        });
         for (const rol of data.roles) {
-          await RolUsuarioRepository.createOrUpdate({
-            idUsuario   : usuarioCreado.id,
-            idRol       : rol,
-            userCreated : data.userCreated || data.userUpdated
-          }, transaccion);
+          await RolUsuarioRepository.createOrUpdate(
+            {
+              idUsuario   : usuarioCreado.id,
+              idRol       : rol,
+              userCreated : data.userCreated || data.userUpdated
+            },
+            transaccion
+          );
         }
       }
 
@@ -180,14 +214,19 @@ module.exports = function userService (repositories, helpers, res) {
         throw new Error('No existe el usuario.');
       }
 
-      const respuestaVerificacion = await AuthRepository.verificarContrasena(data.antiguaContrasena, existeUsuario.contrasena);
+      const respuestaVerificacion = await AuthRepository.verificarContrasena(
+        data.antiguaContrasena,
+        existeUsuario.contrasena
+      );
       if (!respuestaVerificacion) {
         throw new Error('Su contraseña anterior no coincide.');
       }
 
       await UsuarioRepository.createOrUpdate({
         id         : existeUsuario.id,
-        contrasena : await AuthRepository.codificarContrasena(data.nuevaContrasena)
+        contrasena : await AuthRepository.codificarContrasena(
+          data.nuevaContrasena
+        )
       });
       return true;
     } catch (error) {
