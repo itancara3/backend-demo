@@ -9,8 +9,9 @@ let items = [
     nombre          : 'Dashboard',
     ruta            : 'dashboard',
     icono           : 'dashboard',
-    orden           : 1,
     id_menu_permiso : null,
+    orden           : 1,
+    tipo            : '',
     estado          : 'ACTIVO'
   },
   {
@@ -18,8 +19,9 @@ let items = [
     nombre          : 'Administracion',
     ruta            : 'administracion',
     icono           : 'folder_open',
-    orden           : 2,
     id_menu_permiso : null,
+    orden           : 2,
+    tipo            : '',
     estado          : 'ACTIVO'
   },
   {
@@ -27,8 +29,9 @@ let items = [
     nombre          : 'Productos',
     ruta            : 'productos',
     icono           : 'medication',
-    orden           : 3,
     id_menu_permiso : null,
+    orden           : 3,
+    tipo            : '',
     estado          : 'ACTIVO'
   },
   {
@@ -36,8 +39,9 @@ let items = [
     nombre          : 'Compras',
     ruta            : 'compras',
     icono           : 'shopping_bag',
-    orden           : 4,
     id_menu_permiso : null,
+    orden           : 4,
+    tipo            : '',
     estado          : 'ACTIVO'
   },
   {
@@ -45,8 +49,9 @@ let items = [
     nombre          : 'Ventas',
     ruta            : 'ventas',
     icono           : 'shopping_cart',
-    orden           : 5,
     id_menu_permiso : null,
+    orden           : 5,
+    tipo            : '',
     estado          : 'ACTIVO'
   },
   {
@@ -54,8 +59,9 @@ let items = [
     nombre          : 'Inventarios',
     ruta            : 'inventarios',
     icono           : 'inventory',
-    orden           : 6,
     id_menu_permiso : null,
+    orden           : 6,
+    tipo            : '',
     estado          : 'ACTIVO'
   },
   {
@@ -63,8 +69,9 @@ let items = [
     nombre          : 'Finanzas',
     ruta            : 'finanzas',
     icono           : 'finance',
-    orden           : 7,
     id_menu_permiso : null,
+    orden           : 7,
+    tipo            : '',
     estado          : 'ACTIVO'
   }
 ];

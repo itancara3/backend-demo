@@ -4,84 +4,99 @@
 module.exports = function associations (models) {
   const {
     rol,
-    auth,
+    // auth,
     usuario,
     permiso,
-    entidad,
-    rolPermiso,
-    rolUsuario,
-    rolMenu,
+    // entidad,
+    // rolPermiso,
+    // rolUsuario,
+    // rolMenu,
     menu,
-    aplicacion,
-    aplicacionPermiso,
+    // aplicacion,
+    // aplicacionPermiso,
     empresa,
-    parametro,
+    parametro
     // CONTRATOS
-    Solicitud,
-    Adjunto,
-    Asignacion,
-    Parrafo,
-    Certificacion
+    // Solicitud,
+    // Adjunto,
+    // Asignacion,
+    // Parrafo,
+    // Certificacion
   } = models;
 
-  auth.belongsTo(usuario, { foreignKey: { name: 'idUsuario' }, as: 'usuario' });
-  usuario.hasMany(auth,  { foreignKey: { name: 'idUsuario' }, as: 'sesiones' });
+  // auth.belongsTo(usuario, { foreignKey: { name: 'idUsuario' }, as: 'usuario' });
+  // usuario.hasMany(auth,  { foreignKey: { name: 'idUsuario' }, as: 'sesiones' });
 
-  rol.belongsTo(entidad, { foreignKey: { name: 'idEntidad' }, as: 'entidad' });
-  entidad.hasMany(rol,  { foreignKey: { name: 'idEntidad' }, as: 'roles' });
+  // rol.belongsTo(entidad, { foreignKey: { name: 'idEntidad' }, as: 'entidad' });
+  // entidad.hasMany(rol,  { foreignKey: { name: 'idEntidad' }, as: 'roles' });
 
-  aplicacion.belongsTo(entidad, { foreignKey: { name: 'idEntidad' }, as: 'entidad' });
-  entidad.hasMany(aplicacion,  { foreignKey: { name: 'idEntidad' }, as: 'aplicaciones' });
+  // aplicacion.belongsTo(entidad, { foreignKey: { name: 'idEntidad' }, as: 'entidad' });
+  // entidad.hasMany(aplicacion,  { foreignKey: { name: 'idEntidad' }, as: 'aplicaciones' });
 
-  entidad.belongsTo(entidad, { foreignKey: { name: 'idEntidad' }, as: 'entidadPadre' });
-  entidad.hasMany(entidad,  { foreignKey: { name: 'idEntidad' }, as: 'entidades' });
+  // entidad.belongsTo(entidad, { foreignKey: { name: 'idEntidad' }, as: 'entidadPadre' });
+  // entidad.hasMany(entidad,  { foreignKey: { name: 'idEntidad' }, as: 'entidades' });
 
-  usuario.belongsTo(entidad, { foreignKey: { name: 'idEntidad' }, as: 'entidad' });
-  entidad.hasMany(usuario,  { foreignKey: { name: 'idEntidad' }, as: 'usuarios' });
+  // usuario.belongsTo(entidad, { foreignKey: { name: 'idEntidad' }, as: 'entidad' });
+  // entidad.hasMany(usuario,  { foreignKey: { name: 'idEntidad' }, as: 'usuarios' });
 
-  menu.belongsTo(menu, { foreignKey: { name: 'idMenu' }, as: 'menuSuperior' });
+  // menu.belongsTo(menu, { foreignKey: { name: 'idMenu' }, as: 'menuSuperior' });
 
-  rol.belongsToMany(menu, { through: { model: rolMenu, unique: false }, as: 'menus', foreignKey: 'idRol' });
-  menu.belongsToMany(rol, { through: { model: rolMenu, unique: false }, as: 'roles', foreignKey: 'idMenu' });
+  // rol.belongsToMany(menu, { through: { model: rolMenu, unique: false }, as: 'menus', foreignKey: 'idRol' });
+  // menu.belongsToMany(rol, { through: { model: rolMenu, unique: false }, as: 'roles', foreignKey: 'idMenu' });
 
-  rol.belongsToMany(permiso, { through: { model: rolPermiso, unique: false }, as: 'permisos', foreignKey: 'idRol' });
-  permiso.belongsToMany(rol, { through: { model: rolPermiso, unique: false }, as: 'roles', foreignKey: 'idPermiso' });
+  // rol.belongsToMany(permiso, { through: { model: rolPermiso, unique: false }, as: 'permisos', foreignKey: 'idRol' });
+  // permiso.belongsToMany(rol, { through: { model: rolPermiso, unique: false }, as: 'roles', foreignKey: 'idPermiso' });
 
-  aplicacion.belongsToMany(permiso, { through: { model: aplicacionPermiso, unique: false }, as: 'permisos', foreignKey: 'idAplicacion' });
-  permiso.belongsToMany(aplicacion, { through: { model: aplicacionPermiso, unique: false }, as: 'aplicaciones', foreignKey: 'idPermiso' });
+  // aplicacion.belongsToMany(permiso, { through: { model: aplicacionPermiso, unique: false }, as: 'permisos', foreignKey: 'idAplicacion' });
+  // permiso.belongsToMany(aplicacion, { through: { model: aplicacionPermiso, unique: false }, as: 'aplicaciones', foreignKey: 'idPermiso' });
 
-  parametro.belongsTo(parametro, { foreignKey: { name: 'idPadre' }, as: 'parametroPadre' });
-  parametro.hasMany(parametro,  { foreignKey: { name: 'idPadre' }, as: 'parametros' });
+  // parametro.belongsTo(parametro, { foreignKey: { name: 'idPadre' }, as: 'parametroPadre' });
+  // parametro.hasMany(parametro,  { foreignKey: { name: 'idPadre' }, as: 'parametros' });
 
-  empresa.belongsTo(parametro, { foreignKey: { name: 'idParametro' }, as: 'parametro' });
-  parametro.hasMany(empresa,  { foreignKey: { name: 'idParametro' }, as: 'empresas' });
+  // empresa.belongsTo(parametro, { foreignKey: { name: 'idParametro' }, as: 'parametro' });
+  // parametro.hasMany(empresa,  { foreignKey: { name: 'idParametro' }, as: 'empresas' });
+
+  // // Roles de usuario
+  // usuario.belongsTo(rol, { foreignKey: 'idRol', as: 'rol' });
+  // rol.hasMany(usuario,  { foreignKey: 'idRol', as: 'usuarios' });
+
+  rol.hasMany(usuario, { as: 'usuarios', foreignKey: 'idRol' });
+  usuario.belongsTo(rol, { as: 'user', foreignKey: 'idRol' });
+
+  // rol.belongsToMany(menu, { through: { model: permiso, unique: false }, as: 'menus', foreignKey: 'idMenu' });
+  // menu.belongsToMany(rol, { through: { model: permiso, unique: false }, as: 'roles', foreignKey: 'idRol' });
+
+  // permiso.belongsTo(rol, { foreignKey: { name: 'idRol' }, as: 'rol' });
+  // rol.hasMany(permiso,  { foreignKey: { name: 'idRol' }, as: 'permisos' });
+
+  // permiso.belongsTo(menu, { foreignKey: { name: 'idMenuPermiso' }, as: 'menu' });
+  // menu.hasMany(permiso,  { foreignKey: { name: 'idMenuPermiso' }, as: 'permisos' });
+
+  // menu.belongsTo(menu, { foreignKey: { name: 'idMenuPermiso' }, as: 'menuPadre' });
+  // menu.hasMany(menu, { foreignKey: { name: 'idMenuPermiso' }, as: 'menus' });
 
   // Roles de usuario
-  // usuario.belongsTo(rol, { foreignKey: { name: 'idRol' }, as: 'rol' });
-  // rol.hasMany(usuario,  { foreignKey: { name: 'idRol' }, as: 'usuarios' });
+  // usuario.belongsToMany(rol,  { through: { model: rolUsuario, unique: false }, as: 'roles', foreignKey: 'idUsuario' });
+  // rol.belongsToMany(usuario, { through: { model: rolUsuario, unique: false }, as: 'usuarios', foreignKey: 'idRol' });
 
-  // Roles de usuario
-  usuario.belongsToMany(rol,  { through: { model: rolUsuario, unique: false }, as: 'roles', foreignKey: 'idUsuario' });
-  rol.belongsToMany(usuario, { through: { model: rolUsuario, unique: false }, as: 'usuarios', foreignKey: 'idRol' });
+  // auth.belongsTo(usuario, { foreignKey: { name: 'idUsuario' }, as: 'usuarioSesion' });
+  // usuario.hasMany(auth,  { foreignKey: { name: 'idUsuario' }, as: 'sesionesUsuario' });
 
-  auth.belongsTo(usuario, { foreignKey: { name: 'idUsuario' }, as: 'usuarioSesion' });
-  usuario.hasMany(auth,  { foreignKey: { name: 'idUsuario' }, as: 'sesionesUsuario' });
+  // auth.belongsTo(entidad, { foreignKey: { name: 'idEntidad' }, as: 'entidadSesion' });
+  // entidad.hasMany(auth,  { foreignKey: { name: 'idEntidad' }, as: 'sesionesEntidad' });
 
-  auth.belongsTo(entidad, { foreignKey: { name: 'idEntidad' }, as: 'entidadSesion' });
-  entidad.hasMany(auth,  { foreignKey: { name: 'idEntidad' }, as: 'sesionesEntidad' });
+  // // CONTRATOS
+  // Parrafo.belongsTo(Solicitud, { foreignKey: { name: 'idSolicitud' }, as: 'solicitud' });
+  // Solicitud.hasMany(Parrafo,  { foreignKey: { name: 'idSolicitud' }, as: 'parrafos' });
 
-  // CONTRATOS
-  Parrafo.belongsTo(Solicitud, { foreignKey: { name: 'idSolicitud' }, as: 'solicitud' });
-  Solicitud.hasMany(Parrafo,  { foreignKey: { name: 'idSolicitud' }, as: 'parrafos' });
+  // Adjunto.belongsTo(Solicitud, { foreignKey: { name: 'idSolicitud' }, as: 'solicitud' });
+  // Solicitud.hasMany(Adjunto,  { foreignKey: { name: 'idSolicitud' }, as: 'adjuntos' });
 
-  Adjunto.belongsTo(Solicitud, { foreignKey: { name: 'idSolicitud' }, as: 'solicitud' });
-  Solicitud.hasMany(Adjunto,  { foreignKey: { name: 'idSolicitud' }, as: 'adjuntos' });
+  // Certificacion.belongsTo(Solicitud, { foreignKey: { name: 'idSolicitud' }, as: 'solicitud' });
+  // Solicitud.hasOne(Certificacion,  { foreignKey: { name: 'idSolicitud' }, as: 'certificacion' });
 
-  Certificacion.belongsTo(Solicitud, { foreignKey: { name: 'idSolicitud' }, as: 'solicitud' });
-  Solicitud.hasOne(Certificacion,  { foreignKey: { name: 'idSolicitud' }, as: 'certificacion' });
-
-  usuario.belongsToMany(Solicitud,  { through: { model: Asignacion, unique: false }, as: 'solicitudes', foreignKey: 'idUsuario' });
-  Solicitud.belongsToMany(usuario, { through: { model: Asignacion, unique: false }, as: 'usuarios', foreignKey: 'idSolicitud' });
+  // usuario.belongsToMany(Solicitud,  { through: { model: Asignacion, unique: false }, as: 'solicitudes', foreignKey: 'idUsuario' });
+  // Solicitud.belongsToMany(usuario, { through: { model: Asignacion, unique: false }, as: 'usuarios', foreignKey: 'idSolicitud' });
 
   // parametro.belongsTo(parametro, { foreignKey: { name: 'idPadre' }, as: 'paramPadre' });
   // parametro.hasMany(parametro,  { foreignKey: { name: 'idPadre' }, as: 'param' });

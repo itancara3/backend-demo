@@ -2,7 +2,6 @@
 
 const lang = require('../../lang');
 const util = require('../../lib/util');
-
 module.exports = (sequelize, DataTypes) => {
   let fields = {
     id        : util.pk,
@@ -12,9 +11,10 @@ module.exports = (sequelize, DataTypes) => {
       field  : 'id_empresa'
     },
     idRol: {
-      type   : DataTypes.UUID,
-      xlabel : lang.t('fields.idRol'),
-      field  : 'id_rol'
+      type      : DataTypes.UUID,
+      allowNull : true,
+      xlabel    : lang.t('fields.idRol'),
+      field     : 'id_rol'
     },
     idTipoDocumento: {
       type   : DataTypes.UUID,
@@ -61,9 +61,10 @@ module.exports = (sequelize, DataTypes) => {
       field     : 'email'
     },
     direccion: {
-      type   : DataTypes.STRING(250),
-      xlabel : lang.t('fields.direccion'),
-      field  : 'dirrecion'
+      type      : DataTypes.STRING(250),
+      allowNull : true,
+      xlabel    : lang.t('fields.direccion'),
+      field     : 'dirrecion'
     },
     ciudad: {
       type   : DataTypes.STRING(100),
@@ -92,10 +93,11 @@ module.exports = (sequelize, DataTypes) => {
       field     : 'cargo'
     },
     tipo: {
-      type   : DataTypes.ENUM,
-      values : 'venta',
-      xlabel : lang.t('fields.tipo'),
-      field  : 'tipo'
+      type         : DataTypes.ENUM,
+      values       : ['GERENTE', 'VENDEDOR'],
+      defaultValue : 'GERENTE',
+      xlabel       : lang.t('fields.tipo'),
+      field        : 'tipo'
     },
     numeroFiscal: {
       type   : DataTypes.STRING(30),
@@ -122,15 +124,15 @@ module.exports = (sequelize, DataTypes) => {
       type   : DataTypes.STRING(25),
       xlabel : lang.t('fields.colorTexto'),
       field  : 'color_texto'
-    },
-    estado: {
-      type         : DataTypes.ENUM,
-      values       : ['ACTIVO', 'INACTIVO'],
-      defaultValue : 'ACTIVO',
-      allowNull    : false,
-      xlabel       : lang.t('fields.estado'),
-      field        : 'estado'
     }
+    // estado: {
+    //   type         : DataTypes.ENUM,
+    //   values       : ['ACTIVO', 'INACTIVO'],
+    //   defaultValue : 'ACTIVO',
+    //   allowNull    : false,
+    //   xlabel       : lang.t('fields.estado'),
+    //   field        : 'estado'
+    // }
   };
 
   // Agregando campos para el log
