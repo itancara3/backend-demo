@@ -57,6 +57,10 @@ module.exports = function associations (models) {
   parametro.hasMany(empresa,  { foreignKey: { name: 'idParametro' }, as: 'empresas' });
 
   // Roles de usuario
+  // usuario.belongsTo(rol, { foreignKey: { name: 'idRol' }, as: 'rol' });
+  // rol.hasMany(usuario,  { foreignKey: { name: 'idRol' }, as: 'usuarios' });
+
+  // Roles de usuario
   usuario.belongsToMany(rol,  { through: { model: rolUsuario, unique: false }, as: 'roles', foreignKey: 'idUsuario' });
   rol.belongsToMany(usuario, { through: { model: rolUsuario, unique: false }, as: 'usuarios', foreignKey: 'idRol' });
 
