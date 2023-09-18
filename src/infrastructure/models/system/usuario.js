@@ -143,21 +143,12 @@ module.exports = (sequelize, DataTypes) => {
       field     : 'token'
     },
     estado: {
-      type         : DataTypes.ENUM,
-      values       : ['ACTIVO', 'INACTIVO'],
-      defaultValue : 'ACTIVO',
+      type         : DataTypes.INTEGER,
+      defaultValue : 1,
       allowNull    : false,
       xlabel       : lang.t('fields.estado'),
-      field        : 'estado'
+      field        : '_estado'
     }
-    // estado: {
-    //   type         : DataTypes.ENUM,
-    //   values       : ['ACTIVO', 'INACTIVO'],
-    //   defaultValue : 'ACTIVO',
-    //   allowNull    : false,
-    //   xlabel       : lang.t('fields.estado'),
-    //   field        : 'estado'
-    // }
   };
 
   // Agregando campos para el log
