@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     idRol: {
       type      : DataTypes.UUID,
-      allowNull : true,
+      allowNull : false,
       xlabel    : lang.t('fields.idRol'),
       field     : 'id_rol'
     },

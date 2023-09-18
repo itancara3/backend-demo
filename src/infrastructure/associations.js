@@ -50,18 +50,18 @@ module.exports = function associations (models) {
   // aplicacion.belongsToMany(permiso, { through: { model: aplicacionPermiso, unique: false }, as: 'permisos', foreignKey: 'idAplicacion' });
   // permiso.belongsToMany(aplicacion, { through: { model: aplicacionPermiso, unique: false }, as: 'aplicaciones', foreignKey: 'idPermiso' });
 
-  // parametro.belongsTo(parametro, { foreignKey: { name: 'idPadre' }, as: 'parametroPadre' });
-  // parametro.hasMany(parametro,  { foreignKey: { name: 'idPadre' }, as: 'parametros' });
+  parametro.belongsTo(parametro, { foreignKey: { name: 'idPadre' }, as: 'parametroPadre' });
+  parametro.hasMany(parametro,  { foreignKey: { name: 'idPadre' }, as: 'parametros' });
 
-  // empresa.belongsTo(parametro, { foreignKey: { name: 'idParametro' }, as: 'parametro' });
-  // parametro.hasMany(empresa,  { foreignKey: { name: 'idParametro' }, as: 'empresas' });
+  empresa.belongsTo(parametro, { foreignKey: { name: 'idParametro' }, as: 'parametro' });
+  parametro.hasMany(empresa,  { foreignKey: { name: 'idParametro' }, as: 'empresas' });
 
   // // Roles de usuario
   // usuario.belongsTo(rol, { foreignKey: 'idRol', as: 'rol' });
   // rol.hasMany(usuario,  { foreignKey: 'idRol', as: 'usuarios' });
 
-  rol.hasMany(usuario, { as: 'usuarios', foreignKey: 'idRol' });
-  usuario.belongsTo(rol, { as: 'user', foreignKey: 'idRol' });
+  usuario.belongsTo(rol, { foreignKey: { name: 'idRol' }, as: 'rol' });
+  rol.hasMany(usuario, { foreignKey: { name: 'idRol' }, as: 'usuarios' });
 
   // rol.belongsToMany(menu, { through: { model: permiso, unique: false }, as: 'menus', foreignKey: 'idMenu' });
   // menu.belongsToMany(rol, { through: { model: permiso, unique: false }, as: 'roles', foreignKey: 'idRol' });
