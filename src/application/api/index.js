@@ -45,6 +45,7 @@ module.exports = async function setupApi (app, services) {
   app.post('/registrar/empresa', controllers.EmpresaController.crear);
   app.get('/empresa/:id', controllers.EmpresaController.findOne);
   app.put('/empresa/:id', controllers.EmpresaController.actualizar);
+  app.get('/menus/:id', controllers.MenuController.listar);
 
   console.log('🚀  ' + chalk.yellow('RUTAS: ') + chalk.redBright('AUTH'));
 

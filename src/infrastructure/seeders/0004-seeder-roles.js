@@ -9,7 +9,7 @@ let items = [
     id_empresa  : '745034da-06cb-4d98-8fee-4c982adfbb22',
     nombre      : 'ROL SUPER ADMIN',
     descripcion : 'Rol administrador.',
-    estado      : 'ACTIVO'
+    _estado     : 1
   }
 ];
 

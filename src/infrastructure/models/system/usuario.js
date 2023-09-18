@@ -2,7 +2,6 @@
 
 const lang = require('../../lang');
 const util = require('../../lib/util');
-
 module.exports = (sequelize, DataTypes) => {
   let fields = {
     id        : util.pk,
@@ -144,12 +143,11 @@ module.exports = (sequelize, DataTypes) => {
       field     : 'token'
     },
     estado: {
-      type         : DataTypes.ENUM,
-      values       : ['ACTIVO', 'INACTIVO'],
-      defaultValue : 'ACTIVO',
+      type         : DataTypes.INTEGER,
+      defaultValue : 1,
       allowNull    : false,
       xlabel       : lang.t('fields.estado'),
-      field        : 'estado'
+      field        : '_estado'
     }
   };
 

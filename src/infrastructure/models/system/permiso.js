@@ -13,19 +13,20 @@ module.exports = (sequelize, DataTypes) => {
     },
     idMenuPermiso: {
       type   : DataTypes.UUID,
-      xlabel : lang.t('fields.idMenuPermiso'),
+      xlabel : lang.t('fields.idMenu'),
       field  : 'id_menu_permiso'
     },
     acceso: {
-      type   : DataTypes.BOOLEAN,
-      xlabel : lang.t('fields.acceso'),
-      field  : 'acceso'
+      type         : DataTypes.BOOLEAN,
+      defaultValue : true,
+      xlabel       : lang.t('fields.acceso'),
+      field        : 'acceso'
     },
     estado: {
-      type   : DataTypes.ENUM,
-      values : ['ACTIVO', 'INACTIVO'],
-      xlabel : lang.t('fields.estado'),
-      field  : '_estado'
+      type         : DataTypes.INTEGER,
+      defaultValue : 1,
+      xlabel       : lang.t('fields.estado'),
+      field        : '_estado'
     }
   };
 

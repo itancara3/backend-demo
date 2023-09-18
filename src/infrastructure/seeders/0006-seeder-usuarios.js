@@ -18,9 +18,8 @@ let items = [
     contrasena        : bcrypt.hashSync('Developer', saltRounds),
     telefono          : '74085280',
     email             : 'admin@yopmail.com',
-    direccion         : '',
     ciudad            : 'La Paz',
-    provincia_estado  : '',
+    provincia_estado  : 'murillo',
     pais              : 'Bolivia',
     codigo_postal     : '0000',
     cargo             : 'CARGO',
@@ -29,8 +28,7 @@ let items = [
     nombre_fiscal     : '',
     imagen_url        : '',
     color_fondo       : 'verde',
-    color_texto       : 'amarillo',
-    estado            : 'ACTIVO'
+    color_texto       : 'amarillo'
   }
 ];
 
