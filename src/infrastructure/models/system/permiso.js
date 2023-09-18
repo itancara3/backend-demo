@@ -11,10 +11,10 @@ module.exports = (sequelize, DataTypes) => {
       xlabel : lang.t('fields.idRol'),
       field  : 'id_rol'
     },
-    idMenu: {
+    idMenuPermiso: {
       type   : DataTypes.UUID,
-      xlabel : lang.t('fields.idMenu'),
-      field  : 'id_menu'
+      xlabel : lang.t('fields.idMenuPermiso'),
+      field  : 'id_menu_permiso'
     },
     acceso: {
       type   : DataTypes.BOOLEAN,
@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       type   : DataTypes.ENUM,
       values : ['ACTIVO', 'INACTIVO'],
       xlabel : lang.t('fields.estado'),
-      field  : 'estado'
+      field  : '_estado'
     }
   };
 

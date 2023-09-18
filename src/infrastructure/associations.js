@@ -6,12 +6,12 @@ module.exports = function associations (models) {
     rol,
     // auth,
     usuario,
-    // permiso,
+    permiso,
     // entidad,
     // rolPermiso,
     // rolUsuario,
     // rolMenu,
-    // menu,
+    menu,
     // aplicacion,
     // aplicacionPermiso,
     empresa,
@@ -41,6 +41,12 @@ module.exports = function associations (models) {
 
   usuario.belongsTo(parametro, { foreignKey: { name: 'idTipoDocumento' }, as: 'parametro' });
   parametro.hasMany(usuario,  { foreignKey: { name: 'idTipoDocumento' }, as: 'usuarios' });
+
+  permiso.belongsTo(rol, { foreignKey: { name: 'idRol' }, as: 'rol' });
+  rol.hasMany(permiso,  { foreignKey: { name: 'idRol' }, as: 'permisos' });
+
+  permiso.belongsTo(menu, { foreignKey: { name: 'idMenuPermiso' }, as: 'menu' });
+  menu.hasMany(permiso,  { foreignKey: { name: 'idMenuPermiso' }, as: 'permisos' });
 
   /* usuario.belongsTo(empresa, { foreignKey: { name: 'idEmpresa' }, as: 'empresa' });
   empresa.hasMany(usuario,  { foreignKey: { name: 'idEmpresa' }, as: 'usuarios' });

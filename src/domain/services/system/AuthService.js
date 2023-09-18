@@ -16,7 +16,6 @@ module.exports = function authService (repositories, helpers, res) {
     AuthRepository,
     UsuarioRepository,
     SuscripcionRepository,
-    EntidadRepository,
     ParametroRepository,
     MenuRepository,
     PermisoRepository
@@ -226,6 +225,7 @@ module.exports = function authService (repositories, helpers, res) {
   }
 
   async function getMenusRoles (roles) {
+    console.log(roles);
     const idRoles = roles.map((x) => x.id);
     const { rows } = await MenuRepository.findByRoles(idRoles);
     return rows;
@@ -243,11 +243,11 @@ module.exports = function authService (repositories, helpers, res) {
 
   async function getResponse (usuario) {
     try {
-      usuario.menu = await getMenusRoles(usuario.roles);
-      usuario.permisos = await getPermisos(usuario.roles);
+      usuario.menu = await getMenusRoles(usuario.rol);
+      usuario.permisos = await getPermisos(usuario.rol);
 
       usuario.token = await generateToken(ParametroRepository, {
-        idRoles           : usuario.roles.map((x) => x.id),
+        idRoles           : usuario.rol.map((x) => x.id),
         idUsuario         : usuario.id,
         celular           : usuario.celular,
         correoElectronico : usuario.correoElectronico,
@@ -261,7 +261,7 @@ module.exports = function authService (repositories, helpers, res) {
     }
   }
 
-  async function login (usuario, contrasena, request) {
+  /* async function login (usuario, contrasena, request) {
     try {
       const existeUsuario = await UsuarioRepository.login({ usuario });
       if (!existeUsuario) {
@@ -291,11 +291,11 @@ module.exports = function authService (repositories, helpers, res) {
     } catch (err) {
       throw new ErrorApp(err.message, 400);
     }
-  }
+  } */
 
-  async function loginEmpresa (empresa, contrasena, request) {
+  async function login (email, contrasena, request) {
     try {
-      const existeUsuario = await EmpresaRepository.loginEmpresa({ empresa });
+      const existeUsuario = await UsuarioRepository.login({ email });
       if (!existeUsuario) {
         throw new Error('No existe el usuario.');
       }
@@ -316,6 +316,7 @@ module.exports = function authService (repositories, helpers, res) {
         token       : respuesta.token,
         idUsuario   : existeUsuario.id,
         idRol       : existeUsuario.roles.map((x) => x.id).join(','),
+        idEntidad   : existeUsuario.entidad.id,
         userCreated : existeUsuario.id
       });
       return respuesta;
@@ -334,7 +335,6 @@ module.exports = function authService (repositories, helpers, res) {
     getMenusRoles,
     verificarPermisos,
     login,
-    loginEmpresa,
     getCode,
     refreshToken,
     authorizate,

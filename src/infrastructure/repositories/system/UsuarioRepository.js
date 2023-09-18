@@ -5,7 +5,7 @@ const Repository = require('../Repository');
 
 module.exports = function usuariosRepository (models, Sequelize) {
   const Op = Sequelize.Op;
-  const { usuario, empresa, rol, entidad } = models;
+  const { usuario, empresa, rol } = models;
 
   async function findAll (params = {}) {
     const query = getQuery(params);
@@ -149,7 +149,7 @@ module.exports = function usuariosRepository (models, Sequelize) {
 
     query.include = [
       {
-        attributes : ['id', 'numeroDocumento', 'nombreEmpresa'],
+        attributes : ['id', 'numeroDocumento', 'nombreEmpresa', 'estado'],
         model      : empresa,
         as         : 'empresa'
       },
@@ -176,7 +176,7 @@ module.exports = function usuariosRepository (models, Sequelize) {
 
     query.include = [
       {
-        attributes : ['id', 'numeroDocumento', 'nombreEmpresa'],
+        attributes : ['id', 'numeroDocumento', 'nombreEmpresa', 'estado'],
         model      : empresa,
         as         : 'empresa'
       },
@@ -196,7 +196,7 @@ module.exports = function usuariosRepository (models, Sequelize) {
     return null;
   }
 
-  async function login (params = {}) {
+  /* async function login (params = {}) {
     const query = {};
     query.attributes = [
       'id',
@@ -227,6 +227,59 @@ module.exports = function usuariosRepository (models, Sequelize) {
         attributes : ['id', 'idEntidad', 'nombre', 'descripcion', 'estado'],
         model      : rol,
         as         : 'roles'
+      }
+    ];
+
+    const result = await usuario.findOne(query);
+    if (result) {
+      return result.toJSON();
+    }
+    return null;
+  } */
+
+  async function login (params = {}) {
+    const query = {};
+    query.attributes = [
+      'id',
+      'idEmpresa',
+      'idRol',
+      'idTipoDocumento',
+      'nroDocumento',
+      'nombres',
+      'apellidos',
+      'fechaNacimiento',
+      'contrasena',
+      'telefono',
+      'email',
+      'direccion',
+      'ciudad',
+      'provinciaEstado',
+      'pais',
+      'codigoPostal',
+      'cargo',
+      'tipo',
+      'numeroFiscal',
+      'nombreFiscal',
+      'imagenUrl',
+      'colorFondo',
+      'colorTexto',
+      'token',
+      'estado'
+    ];
+
+    query.where = params;
+    query.include = [
+      {
+        required   : true,
+        attributes : ['id', 'numeroDocumento', 'nombreEmpresa'],
+        model      : empresa,
+        as         : 'empresa'
+      },
+      {
+        required   : true,
+        attributes : ['id', 'idEmpresa', 'nombre', 'descripcion', 'estado'],
+        model      : rol,
+        as         : 'rol'
       }
     ];
 
