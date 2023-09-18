@@ -83,14 +83,24 @@ module.exports = function empresaRepository (models, Sequelize) {
     return result.toJSON();
   }
 
-  function existsCompany (params = {}) {
+  async function existsNumNIT (params = {}) {
     const query = {};
-    query.attributes = ['numeroDocumento', 'nombreEmpresa', 'estado'];
+    query.attributes = ['nombreEmpresa', 'numeroDocumento', 'estado'];
     query.where = {
-      estado          : 'ACTIVO',
-      numeroDocumento : params.numeroDocumento
+      [Op.and]: [
+        {
+          estado: 'ACTIVO'
+        },
+        {
+          numeroDocumento: params.numeroDocumento
+        }
+      ]
     };
-    return empresa.findAndCountAll(query);
+    const result = await empresa.findOne(query);
+    if (!result) {
+      return null;
+    }
+    return result.toJSON();
   }
 
   function idParametroTipoDocNIT () {
@@ -107,7 +117,7 @@ module.exports = function empresaRepository (models, Sequelize) {
   return {
     findAll,
     findOne,
-    existsCompany,
+    existsNumNIT,
     idParametroTipoDocNIT,
     createOrUpdate : (item, t) => Repository.createOrUpdate(item, empresa, t),
     deleteItem     : (id, t) => Repository.deleteItem(id, empresa, t)
