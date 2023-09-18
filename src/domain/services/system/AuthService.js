@@ -225,9 +225,10 @@ module.exports = function authService (repositories, helpers, res) {
   }
 
   async function getMenusRoles (roles) {
-    console.log(roles);
-    const idRoles = roles.map((x) => x.id);
+    // const idRoles = roles.map((x) => x.id);
+    const idRoles = roles.id;
     const { rows } = await MenuRepository.findByRoles(idRoles);
+    console.log(rows);
     return rows;
   }
 

@@ -4,7 +4,7 @@ const { getQuery, toJSON } = require('../../lib/util');
 const Repository = require('../Repository');
 
 module.exports = function menusRepository (models, Sequelize) {
-  const { menu, rol } = models;
+  const { menu, permiso } = models;
   const Op = Sequelize.Op;
 
   function findAll (params = {}) {
@@ -58,27 +58,27 @@ module.exports = function menusRepository (models, Sequelize) {
       'nombre',
       'ruta',
       'icono',
-      'idMenu',
+      'idMenuPermiso',
       'orden',
+      'tipo',
       'estado'
     ];
 
     query.order = [['orden', 'ASC']];
 
-    query.include = [
+    /* query.include = [
       {
         required   : true,
-        through    : { attributes: [] },
         attributes : [],
-        model      : rol,
-        as         : 'roles',
+        model      : permiso,
+        as         : 'permisos',
         where      : {
           id: {
             [Op.in]: roles
           }
         }
       }
-    ];
+    ]; */
 
     const result = await menu.findAndCountAll(query);
     return toJSON(result);
