@@ -61,17 +61,6 @@ module.exports = (sequelize, DataTypes) => {
       xlabel       : lang.t('fields.inicioOperaciones'),
       field        : 'inicio_operaciones'
     },
-    correoElectronico: {
-      type      : DataTypes.STRING(100),
-      allowNull : false,
-      xlabel    : lang.t('fields.correoElectronico'),
-      field     : 'correo_electronico'
-    },
-    contrasena: {
-      type      : DataTypes.STRING(100),
-      allowNull : false,
-      xlabel    : lang.t('fields.contrasena')
-    },
     estado: {
       type         : DataTypes.ENUM,
       allowNull    : false,

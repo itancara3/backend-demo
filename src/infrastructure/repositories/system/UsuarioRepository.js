@@ -1,30 +1,40 @@
 'use strict';
 
-const { query } = require('express');
 const { getQuery, errorHandler, toJSON } = require('../../lib/util');
 const Repository = require('../Repository');
 
 module.exports = function usuariosRepository (models, Sequelize) {
   const Op = Sequelize.Op;
-  const { usuario, rol, entidad, menu } = models;
+  const { usuario, empresa, rol, entidad } = models;
 
   async function findAll (params = {}) {
     const query = getQuery(params);
     query.attributes = [
-      'celular',
-      'correoElectronico',
-      'estado',
-      'foto',
       'id',
+      'idEmpresa',
+      'idRol',
+      'idTipoDocumento',
+      'nroDocumento',
       'nombres',
-      'cargo',
-      'idEntidad',
-      'numeroDocumento',
-      'primerApellido',
-      'segundoApellido',
+      'apellidos',
+      'fechaNacimiento',
+      'contrasena',
       'telefono',
-      'usuario',
-      'createdAt'
+      'email',
+      'direccion',
+      'ciudad',
+      'provinciaEstado',
+      'pais',
+      'codigoPostal',
+      'cargo',
+      'tipo',
+      'numeroFiscal',
+      'nombreFiscal',
+      'imagenUrl',
+      'colorFondo',
+      'colorTexto',
+      'token',
+      'estado'
     ];
     query.where = {};
 
@@ -50,22 +60,11 @@ module.exports = function usuariosRepository (models, Sequelize) {
             }
           },
           {
-            primerApellido: {
-              [Op.iLike]: `%${params.search}%`
-            }
-          },
-          {
-            segundoApellido: {
+            apellidos: {
               [Op.iLike]: `%${params.search}%`
             }
           }
         ]
-      };
-    }
-
-    if (params.usuario) {
-      query.where.usuario = {
-        [Op.iLike]: `%${params.usuario}%`
       };
     }
 
@@ -75,41 +74,35 @@ module.exports = function usuariosRepository (models, Sequelize) {
       };
     }
 
-    if (params.primerApellido) {
+    if (params.apellidos) {
       query.where.primerApellido = {
         [Op.iLike]: `%${params.primerApellido}%`
       };
     }
 
-    if (params.segundoApellido) {
-      query.where.segundoApellido = {
-        [Op.iLike]: `%${params.segundoApellido}%`
+    if (params.nroDocumento) {
+      query.where.nroDocumento = {
+        [Op.iLike]: `%${params.nroDocumento}%`
       };
     }
 
-    if (params.numeroDocumento) {
-      query.where.numeroDocumento = {
-        [Op.iLike]: `%${params.numeroDocumento}%`
+    if (params.email) {
+      query.where.email = {
+        [Op.iLike]: `%${params.email}%`
       };
     }
 
-    if (params.correoElectronico) {
-      query.where.correoElectronico = {
-        [Op.iLike]: `%${params.correoElectronico}%`
-      };
-    }
-
-    if (params.celular) {
-      query.where.celular = {
-        [Op.iLike]: `%${params.celular}%`
+    if (params.telefono) {
+      query.where.telefono = {
+        [Op.iLike]: `%${params.telefono}%`
       };
     }
 
     query.include = [
       {
-        attributes : ['id', 'nombre', 'sigla', 'nivel', 'idEntidad'],
-        model      : entidad,
-        as         : 'entidad'
+        attributes : ['id', 'numeroDocumento', 'nombreEmpresa'],
+        model      : empresa,
+        as         : 'empresa'
       },
       {
         through : { attributes: [] },
@@ -126,17 +119,29 @@ module.exports = function usuariosRepository (models, Sequelize) {
     const query = {};
     query.attributes = [
       'id',
-      'usuario',
+      'idEmpresa',
+      'idRol',
+      'idTipoDocumento',
+      'nroDocumento',
       'nombres',
-      'primerApellido',
-      'segundoApellido',
-      'numeroDocumento',
+      'apellidos',
+      'fechaNacimiento',
+      'contrasena',
       'telefono',
-      'idEntidad',
+      'email',
+      'direccion',
+      'ciudad',
+      'provinciaEstado',
+      'pais',
+      'codigoPostal',
       'cargo',
-      'celular',
-      'correoElectronico',
-      'foto',
+      'tipo',
+      'numeroFiscal',
+      'nombreFiscal',
+      'imagenUrl',
+      'colorFondo',
+      'colorTexto',
+      'token',
       'estado'
     ];
 
@@ -144,14 +149,14 @@ module.exports = function usuariosRepository (models, Sequelize) {
 
     query.include = [
       {
-        attributes : ['id', 'nombre', 'sigla', 'nivel', 'idEntidad'],
-        model      : entidad,
-        as         : 'entidad'
+        attributes : ['id', 'numeroDocumento', 'nombreEmpresa'],
+        model      : empresa,
+        as         : 'empresa'
       },
       {
         required   : true,
         through    : { attributes: [] },
-        attributes : ['id', 'idEntidad', 'nombre', 'descripcion', 'estado'],
+        attributes : ['id', 'idEmpresa', 'nombre', 'descripcion', 'estado'],
         model      : rol,
         as         : 'roles'
       }
@@ -171,14 +176,14 @@ module.exports = function usuariosRepository (models, Sequelize) {
 
     query.include = [
       {
-        attributes : ['id', 'nombre', 'sigla', 'nivel', 'idEntidad'],
-        model      : entidad,
-        as         : 'entidad'
+        attributes : ['id', 'numeroDocumento', 'nombreEmpresa'],
+        model      : empresa,
+        as         : 'empresa'
       },
       {
         required   : true,
         through    : { attributes: [] },
-        attributes : ['id', 'idEntidad', 'nombre', 'descripcion', 'estado'],
+        attributes : ['id', 'idEmpresa', 'nombre', 'descripcion', 'estado'],
         model      : rol,
         as         : 'roles'
       }
@@ -200,7 +205,7 @@ module.exports = function usuariosRepository (models, Sequelize) {
       'nombres',
       'primerApellido',
       'segundoApellido',
-      'numeroDocumento',
+      'nroDocumento',
       'telefono',
       'celular',
       'correoElectronico',
@@ -289,25 +294,29 @@ module.exports = function usuariosRepository (models, Sequelize) {
 
     if (params.correoElectronico) {
       Object.assign(query.where, {
-        correoElectronico: params.correoElectronico
+        email: params.correoElectronico
       });
     }
 
-    if (params.usuario) {
-      Object.assign(query.where, { usuario: params.usuario });
-    }
-
-    if (params.usuario && params.correoElectronico) {
-      query.where = {
-        [Op.or]: [
-          {
-            usuario: params.usuario
-          },
-          {
-            correoElectronico: params.correoElectronico
+    if (params.numeroDocumento && params.correoElectronico) {
+      query.include = [
+        {
+          required   : true,
+          attributes : ['id', 'numeroDocumento', 'nombreEmpresa'],
+          model      : empresa,
+          as         : 'empresa',
+          where      : {
+            [Op.and]: [
+              {
+                estado: 'ACTIVO'
+              },
+              {
+                numeroDocumento: params.numeroDocumento
+              }
+            ]
           }
-        ]
-      };
+        }
+      ];
     }
 
     if (params.id) {

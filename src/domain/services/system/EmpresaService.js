@@ -4,7 +4,7 @@ const debug = require('debug')('app:service:auth');
 const { ErrorApp } = require('../../lib/error');
 
 module.exports = function empresaService (repositories, helpers, res) {
-  const { EmpresaRepository, AuthRepository } = repositories;
+  const { EmpresaRepository, AuthRepository, transaction, RolRepository, UsuarioRepository } = repositories;
 
   async function listar (params) {
     try {
@@ -30,37 +30,84 @@ module.exports = function empresaService (repositories, helpers, res) {
   async function createOrUpdate (data) {
     debug('Crear o actualizar empresa');
     let empresa;
-    if (!data.id) {
+    let rol;
+    let msgtexto = '| ';
+    let transaccion;
+    const dataRol = {
+      nombre      : 'ROL SUPER ADMIN',
+      descripcion : 'Rol administrador.'
+    };
+    const dataUsuario = {};
+    const dataEmpresa = this.quitarEspacioVacioPrincFin(data);
+
+    if (!dataEmpresa.id) {
       const idParametroNIT = await EmpresaRepository.idParametroTipoDocNIT();
-      data.idParametro = idParametroNIT.get('id'); // UUID
-      const str = data.numeroDocumento;
+      dataEmpresa.idParametro = idParametroNIT.get('id'); // UUID
+
+      const str = dataEmpresa.numeroDocumento;
       const ultimosTresDig = str.substring(str.length - 3);
       const numNoCero = Number(ultimosTresDig);
       if (numNoCero >= 10 && numNoCero <= 19) {
-        data.empresaUnipersonal = true; // considerado como empresa unipersonal
+        dataEmpresa.empresaUnipersonal = true; // considerado como empresa unipersonal
       } else if (numNoCero >= 20 && numNoCero <= 29) {
-        data.empresaUnipersonal = false; // considerados como empresas jurídicas
+        dataEmpresa.empresaUnipersonal = false; // considerados como empresas jurídicas
+      } else {
+        throw new Error(
+          'El número de NIT ingresado no es correcto, verifique y digite nuevamente.'
+        );
       }
-      data.contrasena = await AuthRepository.codificarContrasena(
-        data.contrasena
-      );
     }
 
     try {
-      const existeEmpresa = await EmpresaRepository.existsCompany(data);
-      if (existeEmpresa.count > 0) {
-        throw new Error(
-          'Ya existe el registro de la empresa con número de NIT: ' +
-            data.numeroDocumento
-        );
-      } else {
-        empresa = await EmpresaRepository.createOrUpdate(data);
+      transaccion = await transaction.create();
+      const msg = await this.verifyEmpresaRegistrationExists(dataEmpresa);
+      if (!Array.isArray(msg) || msg.length === 0) {
+        empresa = await EmpresaRepository.createOrUpdate(dataEmpresa, transaccion);
+
+        dataRol.idEmpresa = empresa.id;
+        rol = await RolRepository.createOrUpdate(dataRol, transaccion);
+
+        dataUsuario.idEmpresa = empresa.id;
+        dataUsuario.idRol = rol.id;
+        dataUsuario.idTipoDocumento = empresa.idParametro;
+        dataUsuario.email = dataEmpresa.correoElectronico;
+        dataUsuario.contrasena = await AuthRepository.codificarContrasena(dataEmpresa.contrasena);
+        await UsuarioRepository.createOrUpdate(dataUsuario, transaccion);
+
+        await transaction.commit(transaccion);
         return empresa;
+      } else {
+        msg.forEach(function (v) { msgtexto += v; msgtexto += ' | '; });
+        throw new Error(
+          'Ya se encuentra registrado la Empresa con: ' + msgtexto
+        );
       }
     } catch (err) {
+      await transaction.rollback(transaccion);
       throw new ErrorApp(err.message, 400);
     }
   }
+
+  const quitarEspacioVacioPrincFin = (formularioJson) => {
+    const json = {};
+    Object.entries(formularioJson).forEach(([key, value]) => {
+      json[key] = value.trim();
+    });
+    return json;
+  };
+
+  const verifyEmpresaRegistrationExists = async (data) => {
+    const msg = [];
+    const existNIT = await EmpresaRepository.existsNumNIT(data);
+    const existEmail = await UsuarioRepository.verificarCorreoElectronico(data);
+    if (existNIT !== null) {
+      msg.push('Número de NIT: ' + existNIT.numeroDocumento);
+    }
+    if (existEmail !== null) {
+      msg.push('Correo electrónico: ' + existEmail.email);
+    }
+    return msg;
+  };
 
   async function deleteItem (id) {
     debug('Eliminando empresa', id);
@@ -77,6 +124,8 @@ module.exports = function empresaService (repositories, helpers, res) {
     findOne,
     listar,
     createOrUpdate,
+    verifyEmpresaRegistrationExists,
+    quitarEspacioVacioPrincFin,
     deleteItem
   };
 };
