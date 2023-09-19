@@ -228,34 +228,31 @@ module.exports = function authService (repositories, helpers, res) {
     // const idRoles = roles.map((x) => x.id);
     const idRoles = roles.id;
     const { rows } = await MenuRepository.findByRoles(idRoles);
-    console.log(rows);
     return rows;
   }
 
-  async function getPermisos (roles) {
-    const idRoles = roles.map((x) => x.id);
-    const { rows } = await PermisoRepository.findByRoles(idRoles);
-    const permisos = {};
-    for (const permiso of rows) {
-      permisos[permiso.nombre] = true;
-    }
-    return permisos;
-  }
+  // async function getPermisos (roles) {
+  //   const idRoles = roles.map((x) => x.id);
+  //   const { rows } = await PermisoRepository.findByRoles(idRoles);
+  //   const permisos = {};
+  //   for (const permiso of rows) {
+  //     permisos[permiso.nombre] = true;
+  //   }
+  //   return permisos;
+  // }
 
   async function getResponse (usuario) {
     try {
       usuario.menu = await getMenusRoles(usuario.rol);
-      usuario.permisos = await getPermisos(usuario.rol);
-
+      // usuario.permisos = await getPermisos(usuario.rol);
       usuario.token = await generateToken(ParametroRepository, {
-        idRoles           : usuario.rol.map((x) => x.id),
-        idUsuario         : usuario.id,
-        celular           : usuario.celular,
-        correoElectronico : usuario.correoElectronico,
-        usuario           : usuario.usuario,
-        idEntidad         : usuario.entidad.id
+        // idRoles           : usuario.rol.map((x) => x.id),
+        idRol     : usuario.idRol,
+        idUsuario : usuario.id,
+        telefono  : usuario.telefono,
+        email     : usuario.email,
+        idEmpresa : usuario.empresa.id
       });
-
       return usuario;
     } catch (error) {
       throw new ErrorApp(error.message, 400);
@@ -316,8 +313,9 @@ module.exports = function authService (repositories, helpers, res) {
         userAgent   : request.headers['user-agent'],
         token       : respuesta.token,
         idUsuario   : existeUsuario.id,
-        idRol       : existeUsuario.roles.map((x) => x.id).join(','),
-        idEntidad   : existeUsuario.entidad.id,
+        // idRol       : existeUsuario.roles.map((x) => x.id).join(','),
+        // idRol       : existeUsuario.rol,
+        idEmpresa   : existeUsuario.empresa.id,
         userCreated : existeUsuario.id
       });
       return respuesta;

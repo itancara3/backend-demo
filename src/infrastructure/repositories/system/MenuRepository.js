@@ -47,7 +47,7 @@ module.exports = function menusRepository (models, Sequelize) {
     return menu.findOne(query);
   }
 
-  async function findByRoles (roles) {
+  async function findByRoles (rol) {
     const query = {};
     query.where = {
       estado: 'ACTIVO'
@@ -66,19 +66,19 @@ module.exports = function menusRepository (models, Sequelize) {
 
     query.order = [['orden', 'ASC']];
 
-    /* query.include = [
+    query.include = [
       {
         required   : true,
         attributes : [],
         model      : permiso,
         as         : 'permisos',
         where      : {
-          id: {
-            [Op.in]: roles
+          idRol: {
+            [Op.eq]: rol
           }
         }
       }
-    ]; */
+    ];
 
     const result = await menu.findAndCountAll(query);
     return toJSON(result);
