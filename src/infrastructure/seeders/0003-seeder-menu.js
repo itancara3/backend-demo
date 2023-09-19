@@ -18,7 +18,7 @@ let items = [
   {
     id              : '039a897a-76dd-44c1-b3d7-9682df8f5342',
     nombre          : 'Administracion',
-    ruta            : 'administracion',
+    ruta            : '',
     icono           : 'folder_open',
     id_menu_permiso : null,
     orden           : 2,
@@ -101,7 +101,7 @@ let items = [
     id              : '3ba38bae-5646-11ee-8c99-0242ac120002',
     nombre          : 'Roles',
     ruta            : 'roles',
-    icono           : '',
+    icono           : 'roles',
     id_menu_permiso : '4a247690-5644-11ee-8c99-0242ac120002',
     orden           : 20201,
     tipo            : 'MENU',

@@ -41,10 +41,30 @@ const AuthMiddleware = function (services) {
     return async function _middleware (req, res, next) {
       try {
         const consulta = {
-          roles    : req.user.idRoles,
-          permisos : permisos
+          roles: req.user.idRoles
+          // permisos : permisos
         };
         const tienePermiso = await AuthService.verificarPermisos(consulta);
+        console.log(tienePermiso);
+        if (!tienePermiso) {
+          throw new Error('No tiene permisos para realizar esta accion.');
+        }
+        next();
+      } catch (error) {
+        mensajeError(res, HTTP_CODES.UNAUTHORIZED, error.message);
+      }
+    };
+  }
+
+  function verificarRol (rol) {
+    return async function _middleware (req, res, next) {
+      try {
+        const consulta = {
+          roles: req.user.idRoles
+          // permisos : permisos
+        };
+        const tienePermiso = await AuthService.verificarPermisos(consulta);
+        console.log(tienePermiso);
         if (!tienePermiso) {
           throw new Error('No tiene permisos para realizar esta accion.');
         }
@@ -57,7 +77,8 @@ const AuthMiddleware = function (services) {
 
   return {
     verificarToken,
-    verificarPermisos
+    verificarPermisos,
+    verificarRol
   };
 };
 

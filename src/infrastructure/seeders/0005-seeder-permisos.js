@@ -47,9 +47,37 @@ let items = [
     _estado         : 1
   },
   {
-    id              : '49dc495f-8594-4c30-9308-5769f2067b67',
+    id              : 'e0fcf530-56fb-11ee-8c99-0242ac120002',
     id_rol          : '88b0104c-1bd1-42b2-bb01-9bf0502bab5a',
     id_menu_permiso : 'a0882ff9-0d95-4d60-835d-85624f7a3411',
+    acceso          : true,
+    _estado         : 1
+  },
+  {
+    id              : '31dc26f6-56fc-11ee-8c99-0242ac120002',
+    id_rol          : '88b0104c-1bd1-42b2-bb01-9bf0502bab5a',
+    id_menu_permiso : '2a9d51aa-5646-11ee-8c99-0242ac120002',
+    acceso          : true,
+    _estado         : 1
+  },
+  {
+    id              : '7ed66c1e-56fc-11ee-8c99-0242ac120002',
+    id_rol          : '88b0104c-1bd1-42b2-bb01-9bf0502bab5a',
+    id_menu_permiso : '4a247690-5644-11ee-8c99-0242ac120002',
+    acceso          : true,
+    _estado         : 1
+  },
+  {
+    id              : 'a1a423c6-56fc-11ee-8c99-0242ac120002',
+    id_rol          : '88b0104c-1bd1-42b2-bb01-9bf0502bab5a',
+    id_menu_permiso : '3ba38bae-5646-11ee-8c99-0242ac120002',
+    acceso          : true,
+    _estado         : 1
+  },
+  {
+    id              : 'b1a8f490-56fc-11ee-8c99-0242ac120002',
+    id_rol          : '88b0104c-1bd1-42b2-bb01-9bf0502bab5a',
+    id_menu_permiso : '42b35d8e-5646-11ee-8c99-0242ac120002',
     acceso          : true,
     _estado         : 1
   }

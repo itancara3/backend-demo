@@ -4,10 +4,10 @@ const { getQuery, toJSON } = require('../../lib/util');
 const Repository = require('../Repository');
 
 module.exports = function rolesRepository (models, Sequelize) {
-  const { rol, ruta, menu, entidad } = models;
+  const { rol, ruta, menu, empresa, permiso } = models;
   const Op = Sequelize.Op;
 
-  const attributes = ['id', 'idEntidad', 'nombre', 'descripcion', 'estado', 'createdAt'];
+  const attributes = ['id', 'idEmpresa', 'nombre', 'descripcion', 'estado', 'createdAt'];
 
   async function findAll (params = {}) {
     const query = getQuery(params);
@@ -18,37 +18,29 @@ module.exports = function rolesRepository (models, Sequelize) {
       {
         attributes: [
           'id',
-          'sigla',
-          'nombre',
-          'idEntidad',
-          'nivel'
-        ],
-        model : entidad,
-        as    : 'entidad'
-      },
-      {
-        attributes: [
-          'id',
-          'nombre',
-          'ruta',
-          'icono',
-          'idMenu',
-          'orden',
+          'nombreEmpresa',
+          'nombreComercial',
+          'personaNatural',
+          'empresaUnipersonal',
+          'direccionCentral',
           'estado'
         ],
-        through : { attributes: [] },
-        model   : menu,
-        as      : 'menus'
+        model : empresa,
+        as    : 'empresa'
       }
+      // {
+      //   through : { attributes: [] },
+      //   model   : menu,
+      //   as      : 'menus'
+      // }
     ];
-
-    if (params.idEntidad) {
-      query.where.idEntidad = params.idEntidad;
+    if (params.idEmpresa) {
+      query.where.idEmpresa = params.idEmpresa;
     }
 
-    if (params.entidades && !params.idEntidad) {
-      query.where.idEntidad = {
-        [Op.in]: params.entidades
+    if (params.empresa && !params.idEmpresas) {
+      query.where.idEmpresa = {
+        [Op.in]: params.empresa
       };
     }
 
@@ -74,7 +66,7 @@ module.exports = function rolesRepository (models, Sequelize) {
 
   async function findOne (params = {}) {
     const query = {
-      attributes : ['id', 'idEntidad', 'nombre', 'descripcion', 'estado'],
+      attributes : ['id', 'idEmpresa', 'nombre', 'descripcion', 'estado'],
       where      : params
     };
 
@@ -82,28 +74,22 @@ module.exports = function rolesRepository (models, Sequelize) {
       {
         attributes: [
           'id',
-          'sigla',
-          'nombre',
-          'idEntidad',
-          'nivel'
+          'nombreEmpresa'
         ],
-        model : entidad,
-        as    : 'entidad'
-      },
-      {
-        attributes: [
-          'id',
-          'nombre',
-          'ruta',
-          'icono',
-          'idMenu',
-          'orden',
-          'estado'
-        ],
-        through : { attributes: [] },
-        model   : menu,
-        as      : 'menus'
+        model : empresa,
+        as    : 'empresa'
       }
+      // {
+      //   required   : true,
+      //   attributes : [],
+      //   model      : permiso,
+      //   as         : 'permisos',
+      //   where      : {
+      //     idRol: {
+      //       [Op.eq]: rol
+      //     }
+      //   }
+      // }
     ];
     const result = await rol.findOne(query);
     if (!result) {
