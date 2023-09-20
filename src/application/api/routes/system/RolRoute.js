@@ -14,6 +14,7 @@ module.exports = function setupSocio (api, controllers, middlewares) {
   // api.put('/roles/:id', AuthMiddleware.verificarPermisos(['roles:actualizar']), RolController.actualizar);
   // api.delete('/roles/:id', AuthMiddleware.verificarPermisos(['roles:eliminar']), RolController.eliminar);
 
+  api.get('/roles/:id/permisos', RolController.listarPermisos);
   api.get('/roles/:id/permisos', AuthMiddleware.verificarPermisos(['roles:crear', 'roles:actualizar']), RolController.listarPermisos);
 
   return api;

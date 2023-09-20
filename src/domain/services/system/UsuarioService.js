@@ -156,13 +156,11 @@ module.exports = function userService (repositories, helpers, res) {
 
       const existeUsuario = await UsuarioRepository.verificarCorreoElectronico(
         {
-          id                : data.id,
-          correoElectronico : data.correoElectronico,
-          usuario           : data.usuario
+          id    : data.id,
+          email : data.email
         },
         transaccion
       );
-
       if (existeUsuario) {
         if (existeUsuario.correoElectronico === data.correoElectronico) {
           throw new Error(
@@ -183,7 +181,9 @@ module.exports = function userService (repositories, helpers, res) {
       );
 
       if (data.roles) {
-        if (data.roles.length === 0) { throw new Error('Debe asignar al menos un rol al usuario'); }
+        if (data.roles.length === 0) {
+          throw new Error('Debe asignar al menos un rol al usuario');
+        }
         await RolUsuarioRepository.deleteItemCond({
           idUsuario: usuarioCreado.id
         });

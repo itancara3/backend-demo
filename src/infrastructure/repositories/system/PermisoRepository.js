@@ -4,7 +4,7 @@ const { getQuery, toJSON } = require('../../lib/util');
 const Repository = require('../Repository');
 
 module.exports = function modulossRepository (models, Sequelize) {
-  const { permiso, modulos, rol, aplicacion } = models;
+  const { permiso, modulos, rol, aplicacion, menu } = models;
   const Op = Sequelize.Op;
 
   async function findAll (params = {}) {
@@ -56,44 +56,45 @@ module.exports = function modulossRepository (models, Sequelize) {
   }
 
   async function findOne (params) {
+    // console.log(params);
     const query = {};
     query.where = {};
     query.attributes =  [
       'id',
-      'nombre',
-      'descripcion',
-      'tipo'
+      'idRol',
+      'idMenuPermiso',
+      'acceso',
+      'estado'
     ];
-    if (params.idRol) {
-      query.where.id = params.idRol;
+    if (params.id) {
+      query.where.id = params.id;
     }
-
     query.include = [
       {
-        attributes: [
-          'id',
-          'idModulo',
-          'idRol',
-          'access',
-          'create',
-          'read',
-          'update',
-          'delete',
-          'csv'
-        ],
-        model   : permiso,
-        as      : 'permiso',
-        include : [
-          {
-            attributes : [],
-            model      : modulos,
-            as         : 'modulo',
-            where      : { id: params.idModulo }
-          }
-        ]
+        // attributes: [
+        //   'id',
+        //   'nombre',
+        //   'ruta',
+        //   'icono',
+        //   'idMenuPermiso',
+        //   'orden',
+        //   'tipo',
+        //   'estado'
+        // ],
+        // model : menu,
+        // as    : 'menu'
+        // include : [
+        //   {
+        //     attributes : [],
+        //     model      : modulos,
+        //     as         : 'modulo',
+        //     where      : { id: params.idModulo }
+        //   }
+        // ]
       }
     ];
     const result = await rol.findAndCountAll(query);
+    console.log(result);
     return toJSON(result);
   }
 

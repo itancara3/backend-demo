@@ -80,15 +80,15 @@ module.exports = function rolesRepository (models, Sequelize) {
         as    : 'empresa'
       }
       // {
-      //   required   : true,
       //   attributes : [],
       //   model      : permiso,
       //   as         : 'permisos',
-      //   where      : {
-      //     idRol: {
-      //       [Op.eq]: rol
-      //     }
-      //   }
+      //   where      : { idRol: params.id }
+      // include    : {
+      //   model : menu,
+      //   as    : 'menu'
+      // where : { id: permiso.idMenuPermiso }
+      // }
       // }
     ];
     const result = await rol.findOne(query);

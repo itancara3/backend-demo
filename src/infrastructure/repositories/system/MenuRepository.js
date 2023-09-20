@@ -14,18 +14,19 @@ module.exports = function menusRepository (models, Sequelize) {
       'nombre',
       'ruta',
       'icono',
-      'idMenu',
+      'idMenuPermiso',
       'orden',
+      'tipo',
       'estado'
     ];
 
     query.where = {};
-    query.include = [
-      {
-        model : menu,
-        as    : 'menuSuperior'
-      }
-    ];
+    // query.include = [
+    //   {
+    //     model : menu,
+    //     as    : 'menu'
+    //   }
+    // ];
 
     if (params.estado) {
       query.where.estado = params.estado;

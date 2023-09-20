@@ -105,9 +105,8 @@ module.exports = function usuariosRepository (models, Sequelize) {
         as         : 'empresa'
       },
       {
-        through : { attributes: [] },
-        model   : rol,
-        as      : 'roles'
+        model : rol,
+        as    : 'rol'
       }
     ];
 
@@ -154,11 +153,9 @@ module.exports = function usuariosRepository (models, Sequelize) {
         as         : 'empresa'
       },
       {
-        required   : true,
-        through    : { attributes: [] },
         attributes : ['id', 'idEmpresa', 'nombre', 'descripcion', 'estado'],
         model      : rol,
-        as         : 'roles'
+        as         : 'rol'
       }
     ];
 
@@ -345,17 +342,17 @@ module.exports = function usuariosRepository (models, Sequelize) {
     const query = {};
     query.where = {};
 
-    if (params.correoElectronico) {
+    if (params.email) {
       Object.assign(query.where, {
-        email: params.correoElectronico
+        email: params.email
       });
     }
 
-    if (params.numeroDocumento && params.correoElectronico) {
+    if (params.nroDocumento && params.email) {
       query.include = [
         {
           required   : true,
-          attributes : ['id', 'numeroDocumento', 'nombreEmpresa'],
+          attributes : ['id', 'nroDocumento', 'nombreEmpresa'],
           model      : empresa,
           as         : 'empresa',
           where      : {
@@ -364,14 +361,13 @@ module.exports = function usuariosRepository (models, Sequelize) {
                 estado: 'ACTIVO'
               },
               {
-                numeroDocumento: params.numeroDocumento
+                nroDocumento: params.nroDocumento
               }
             ]
           }
         }
       ];
     }
-
     if (params.id) {
       query.where.id = {
         [Op.not]: params.id

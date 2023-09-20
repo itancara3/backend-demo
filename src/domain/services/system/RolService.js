@@ -4,7 +4,15 @@ const debug = require('debug')('app:service:rol');
 const Service = require('../Service');
 const { ErrorApp } = require('../../lib/error');
 module.exports = function rolService (repositories, helpers, res) {
-  const { RolRepository, RolRutaRepository, RolMenuRepository, RolPermisoRepository, transaction, PermisoRepository } = repositories;
+  const {
+    RolRepository,
+    RolRutaRepository,
+    RolMenuRepository,
+    RolPermisoRepository,
+    transaction,
+    PermisoRepository,
+    MenuRepository
+  } = repositories;
 
   async function findAll (params = {}) {
     debug('Lista de roles|filtros');
@@ -23,9 +31,12 @@ module.exports = function rolService (repositories, helpers, res) {
       const permisos = await PermisoRepository.findAll({ tipo: 'SISTEMA' });
       let permisosRol = [];
       if (idRol) {
-        permisosRol = await PermisoRepository.findAll({ idRol, tipo: 'SISTEMA' });
+        permisosRol = await PermisoRepository.findAll({
+          idRol,
+          tipo: 'SISTEMA'
+        });
         for (const permiso of permisos.rows) {
-          const existe = permisosRol.rows.find(x => x.id === permiso.id);
+          const existe = permisosRol.rows.find((x) => x.id === permiso.id);
           if (existe) {
             permiso.permitido = true;
           }
@@ -38,13 +49,23 @@ module.exports = function rolService (repositories, helpers, res) {
     }
   }
 
+  async function getResponse (rol) {
+    try {
+      rol.menus = await MenuRepository.findByRoles(rol.id);
+      return rol;
+    } catch (error) {
+      throw new ErrorApp(error.message, 400);
+    }
+  }
+
   async function findOne (params) {
     try {
-      const entidad = await RolRepository.findOne(params);
-      if (!entidad) {
-        throw new Error('La entidad no existe');
+      const rol = await RolRepository.findOne(params);
+      const result = await getResponse(rol);
+      if (!result) {
+        throw new Error('El rol no existe');
       }
-      return entidad;
+      return result;
     } catch (err) {
       throw new ErrorApp(err.message, 400);
     }
@@ -121,14 +142,17 @@ module.exports = function rolService (repositories, helpers, res) {
       // recuperando los menus del rol
       const rolMenus = await RolMenuRepository.findAll({ idRol });
       // recuperando los idRolMenu
-      rolMenus.rows.forEach(rolMenu => {
+      rolMenus.rows.forEach((rolMenu) => {
         idRolMenus.push(rolMenu.id);
       });
       // eliminando los RolMenus anteriores
       await RolMenuRepository.deleteItem(idRolMenus, transaccion);
       // creamos los nuevos Roles Menu uno por uno
       for (const menu of menus) {
-        await RolMenuRepository.createOrUpdate({ idRol, idMenu: menu }, transaccion);
+        await RolMenuRepository.createOrUpdate(
+          { idRol, idMenu: menu },
+          transaccion
+        );
       }
       await transaction.commit(transaccion);
     } catch (error) {
@@ -147,14 +171,17 @@ module.exports = function rolService (repositories, helpers, res) {
       // recuperando las rutas del rol
       const rolRutas = await RolRutaRepository.findAll({ idRol });
       // recuperando los idRolRuta
-      rolRutas.rows.forEach(rolMenu => {
+      rolRutas.rows.forEach((rolMenu) => {
         idRolRutas.push(rolMenu.id);
       });
       // eliminando los RolRuta anteriores
       await RolRutaRepository.deleteItem(idRolRutas, transaccion);
       // creamos los nuevos Roles Ruta uno por uno
       for (const ruta of rutas) {
-        await RolRutaRepository.createOrUpdate({ idRol, idRuta: ruta }, transaccion);
+        await RolRutaRepository.createOrUpdate(
+          { idRol, idRuta: ruta },
+          transaccion
+        );
       }
       await transaction.commit(transaccion);
     } catch (error) {
@@ -164,6 +191,7 @@ module.exports = function rolService (repositories, helpers, res) {
     }
   }
   return {
+    getResponse,
     findOne,
     listarPermisos,
     findAll,
