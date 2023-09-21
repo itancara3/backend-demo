@@ -23,10 +23,11 @@ module.exports = (sequelize, DataTypes) => {
       field        : 'acceso'
     },
     estado: {
-      type         : DataTypes.INTEGER,
-      defaultValue : 1,
+      type         : DataTypes.ENUM,
+      values       : ['ACTIVO', 'INACTIVO'],
+      defaultValue : 'ACTIVO',
       xlabel       : lang.t('fields.estado'),
-      field        : '_estado'
+      field        : 'estado'
     }
   };
 

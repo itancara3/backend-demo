@@ -73,6 +73,7 @@ module.exports = function setupRolController (services) {
 
   async function actualizar (req, res) {
     try {
+      console.log(req.body);
       debug('actualizando rol');
       const data = req.body;
       data.id = req.params.id;
