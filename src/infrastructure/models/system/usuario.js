@@ -12,10 +12,10 @@ module.exports = (sequelize, DataTypes) => {
       field     : 'id_empresa'
     },
     idRol: {
-      type      : DataTypes.UUID,
-      allowNull : false,
-      xlabel    : lang.t('fields.idRol'),
-      field     : 'id_rol'
+      type   : DataTypes.UUID,
+      // allowNull : false,
+      xlabel : lang.t('fields.idRol'),
+      field  : 'id_rol'
     },
     idTipoDocumento: {
       type      : DataTypes.UUID,
