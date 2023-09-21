@@ -4,7 +4,7 @@ const { getQuery, toJSON } = require('../../lib/util');
 const Repository = require('../Repository');
 
 module.exports = function menusRepository (models, Sequelize) {
-  const { menu, rol } = models;
+  const { menu, permiso } = models;
   const Op = Sequelize.Op;
 
   function findAll (params = {}) {
@@ -14,8 +14,9 @@ module.exports = function menusRepository (models, Sequelize) {
       'nombre',
       'ruta',
       'icono',
-      'idMenu',
+      'idMenuPermiso',
       'orden',
+      'tipo',
       'estado'
     ];
 
@@ -47,7 +48,7 @@ module.exports = function menusRepository (models, Sequelize) {
     return menu.findOne(query);
   }
 
-  async function findByRoles (roles) {
+  async function findByRoles (rol) {
     const query = {};
     query.where = {
       estado: 'ACTIVO'
@@ -58,8 +59,9 @@ module.exports = function menusRepository (models, Sequelize) {
       'nombre',
       'ruta',
       'icono',
-      'idMenu',
+      'idMenuPermiso',
       'orden',
+      'tipo',
       'estado'
     ];
 
@@ -68,13 +70,12 @@ module.exports = function menusRepository (models, Sequelize) {
     query.include = [
       {
         required   : true,
-        through    : { attributes: [] },
         attributes : [],
-        model      : rol,
-        as         : 'roles',
+        model      : permiso,
+        as         : 'permisos',
         where      : {
-          id: {
-            [Op.in]: roles
+          idRol: {
+            [Op.eq]: rol
           }
         }
       }

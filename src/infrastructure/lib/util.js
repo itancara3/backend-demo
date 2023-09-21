@@ -44,7 +44,10 @@ function loadModels (PATH, sequelize, opts = {}) {
       models[file] = loadModels(pathFile, sequelize, opts);
     } else {
       file = file.replace('.js', '');
-      models[file] = require(path.join(pathFile))(sequelize, Sequelize.DataTypes);
+      models[file] = require(path.join(pathFile))(
+        sequelize,
+        Sequelize.DataTypes
+      );
     }
   });
 
@@ -130,7 +133,9 @@ const timestamps = {
     field        : '_created_at',
     get          : function () {
       if (this.getDataValue('createdAt')) {
-        return moment(this.getDataValue('createdAt')).format('DD-MM-YYYY HH:mm:ss');
+        return moment(this.getDataValue('createdAt')).format(
+          'DD-MM-YYYY HH:mm:ss'
+        );
       }
       return null;
     }
@@ -141,7 +146,9 @@ const timestamps = {
     field  : '_updated_at',
     get    : function () {
       if (this.getDataValue('updatedAt')) {
-        return moment(this.getDataValue('updatedAt')).format('DD-MM-YYYY HH:mm:ss');
+        return moment(this.getDataValue('updatedAt')).format(
+          'DD-MM-YYYY HH:mm:ss'
+        );
       }
       return null;
     }
@@ -152,7 +159,9 @@ const timestamps = {
     field  : '_deleted_at',
     get    : function () {
       if (this.getDataValue('deletedAt')) {
-        return moment(this.getDataValue('deletedAt')).format('DD-MM-YYYY HH:mm:ss');
+        return moment(this.getDataValue('deletedAt')).format(
+          'DD-MM-YYYY HH:mm:ss'
+        );
       }
       return null;
     }
@@ -163,7 +172,10 @@ function setTimestamps (fields) {
   return Object.assign(fields, timestamps);
 }
 
-function setTimestampsSeeder (arr, idUser = '7171272e-b31b-4c34-9220-9f535c958c5c') {
+function setTimestampsSeeder (
+  arr,
+  idUser = '7171272e-b31b-4c34-9220-9f535c958c5c'
+) {
   arr.map((el, index) => {
     arr[index] = Object.assign(el, {
       _user_created : idUser,
@@ -188,16 +200,14 @@ function getQuery (options = {}, arr = []) {
     options.order = 'createdAt';
   }
 
-  if (arr.indexOf(options.order ? options.order.replace('-', '') : null) === -1) {
+  if (
+    arr.indexOf(options.order ? options.order.replace('-', '') : null) === -1
+  ) {
     if (options.order) {
       if (options.order.startsWith('-')) {
-        query.order = [
-          [options.order.substring(1), 'DESC']
-        ];
+        query.order = [[options.order.substring(1), 'DESC']];
       } else {
-        query.order = [
-          [options.order, 'ASC']
-        ];
+        query.order = [[options.order, 'ASC']];
       }
     }
   }
@@ -245,7 +255,8 @@ function errorHandler (error) {
 function getText (oError) {
   let text = '';
   for (const key in oError) {
-    text += '- ' + oError[key].label + ': ' + oError[key].errors.join(', ') + '.\n';
+    text +=
+      '- ' + oError[key].label + ': ' + oError[key].errors.join(', ') + '.\n';
   }
   return text;
 }
@@ -265,7 +276,7 @@ function toJSON (result) {
   let count = 0;
   if (result) {
     if (result.rows && Array.isArray(result.rows)) {
-      result.rows.map(item => {
+      result.rows.map((item) => {
         rows.push(item.toJSON());
       });
     }

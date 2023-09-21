@@ -5,7 +5,7 @@ const Repository = require('../Repository');
 
 module.exports = function usuariosRepository (models, Sequelize) {
   const Op = Sequelize.Op;
-  const { usuario, empresa, rol, entidad } = models;
+  const { usuario, empresa, rol } = models;
 
   async function findAll (params = {}) {
     const query = getQuery(params);
@@ -149,7 +149,7 @@ module.exports = function usuariosRepository (models, Sequelize) {
 
     query.include = [
       {
-        attributes : ['id', 'numeroDocumento', 'nombreEmpresa'],
+        attributes : ['id', 'numeroDocumento', 'nombreEmpresa', 'estado'],
         model      : empresa,
         as         : 'empresa'
       },
@@ -176,7 +176,7 @@ module.exports = function usuariosRepository (models, Sequelize) {
 
     query.include = [
       {
-        attributes : ['id', 'numeroDocumento', 'nombreEmpresa'],
+        attributes : ['id', 'numeroDocumento', 'nombreEmpresa', 'estado'],
         model      : empresa,
         as         : 'empresa'
       },
@@ -200,33 +200,45 @@ module.exports = function usuariosRepository (models, Sequelize) {
     const query = {};
     query.attributes = [
       'id',
-      'contrasena',
-      'usuario',
-      'nombres',
-      'primerApellido',
-      'segundoApellido',
+      'idEmpresa',
+      'idRol',
+      'idTipoDocumento',
       'nroDocumento',
+      'nombres',
+      'apellidos',
+      'fechaNacimiento',
+      'contrasena',
       'telefono',
-      'celular',
-      'correoElectronico',
-      'foto',
+      'email',
+      'direccion',
+      'ciudad',
+      'provinciaEstado',
+      'pais',
+      'codigoPostal',
+      'cargo',
+      'tipo',
+      'numeroFiscal',
+      'nombreFiscal',
+      'imagenUrl',
+      'colorFondo',
+      'colorTexto',
+      'token',
       'estado'
     ];
 
     query.where = params;
-
     query.include = [
       {
-        attributes : ['id', 'nombre', 'sigla', 'nivel', 'idEntidad'],
-        model      : entidad,
-        as         : 'entidad'
+        required   : true,
+        attributes : ['id', 'numeroDocumento', 'nombreEmpresa', 'imagenUrl', 'empresaUnipersonal'],
+        model      : empresa,
+        as         : 'empresa'
       },
       {
         required   : true,
-        through    : { attributes: [] },
-        attributes : ['id', 'idEntidad', 'nombre', 'descripcion', 'estado'],
+        attributes : ['id', 'idEmpresa', 'nombre', 'descripcion', 'estado'],
         model      : rol,
-        as         : 'roles'
+        as         : 'rol'
       }
     ];
 
