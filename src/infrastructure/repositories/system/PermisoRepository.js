@@ -207,6 +207,7 @@ module.exports = function modulossRepository (models, Sequelize) {
     findOne,
     findById       : (id) => Repository.findById(id, permiso),
     createOrUpdate : (item, t) => Repository.createOrUpdate(item, permiso, t),
-    deleteItem     : (id, t) => Repository.deleteItem(id, permiso, t)
+    deleteItem     : (id, t) => Repository.deleteItem(id, permiso, t),
+    deleteItemCond : (params, t) => Repository.deleteItemCond(params, permiso, t)
   };
 };

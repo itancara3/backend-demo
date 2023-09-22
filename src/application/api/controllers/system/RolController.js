@@ -60,6 +60,7 @@ module.exports = function setupRolController (services) {
     }
   }
   async function crear (req, res) {
+    console.log(req.body);
     try {
       const data = req.body;
       debug('creando rol');
