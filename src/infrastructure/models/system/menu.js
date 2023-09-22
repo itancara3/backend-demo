@@ -21,10 +21,9 @@ module.exports = (sequelize, DataTypes) => {
       field  : 'icono'
     },
     idMenuPermiso: {
-      type      : DataTypes.UUID,
-      allowNull : true,
-      xlabel    : lang.t('fields.idMenuPermiso'),
-      field     : 'id_menu_permiso'
+      type   : DataTypes.UUID,
+      xlabel : lang.t('fields.idMenuPermiso'),
+      field  : 'id_menu_permiso'
     },
     orden: {
       type         : DataTypes.INTEGER,

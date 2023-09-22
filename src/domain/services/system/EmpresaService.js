@@ -2,9 +2,10 @@
 
 const debug = require('debug')('app:service:auth');
 const { ErrorApp } = require('../../lib/error');
+const Service = require('../Service');
 
 module.exports = function empresaService (repositories, helpers, res) {
-  const { EmpresaRepository, AuthRepository, transaction, RolRepository, UsuarioRepository } = repositories;
+  const { EmpresaRepository, AuthRepository, transaction, RolRepository, UsuarioRepository, PermisoRepository } = repositories;
 
   async function listar (params) {
     try {
@@ -31,6 +32,7 @@ module.exports = function empresaService (repositories, helpers, res) {
     debug('Crear o actualizar empresa');
     let empresa;
     let rol;
+    let usuario;
     let msgtexto = '| ';
     let transaccion;
     const dataRol = {
@@ -38,7 +40,7 @@ module.exports = function empresaService (repositories, helpers, res) {
       descripcion : 'Rol administrador.'
     };
     const dataUsuario = {};
-    const dataEmpresa = this.quitarEspacioVacioPrincFin(data);
+    const dataEmpresa = Service.quitarEspacioVacioPrincFin(data);
 
     if (!dataEmpresa.id) {
       const idParametroNIT = await EmpresaRepository.idParametroTipoDocNIT();
@@ -56,45 +58,48 @@ module.exports = function empresaService (repositories, helpers, res) {
           'El número de NIT ingresado no es correcto, verifique y digite nuevamente.'
         );
       }
-    }
 
-    try {
-      transaccion = await transaction.create();
-      const msg = await this.verifyEmpresaRegistrationExists(dataEmpresa);
-      if (!Array.isArray(msg) || msg.length === 0) {
-        empresa = await EmpresaRepository.createOrUpdate(dataEmpresa, transaccion);
+      try {
+        transaccion = await transaction.create();
+        const msg = await this.verifyEmpresaRegistrationExists(dataEmpresa);
+        if (!Array.isArray(msg) || msg.length === 0) {
+          empresa = await EmpresaRepository.createOrUpdate(dataEmpresa, transaccion);
 
-        dataRol.idEmpresa = empresa.id;
-        rol = await RolRepository.createOrUpdate(dataRol, transaccion);
+          dataRol.idEmpresa = empresa.id;
+          rol = await RolRepository.createOrUpdate(dataRol, transaccion);
 
-        dataUsuario.idEmpresa = empresa.id;
-        dataUsuario.idRol = rol.id;
-        dataUsuario.idTipoDocumento = empresa.idParametro;
-        dataUsuario.email = dataEmpresa.correoElectronico;
-        dataUsuario.contrasena = await AuthRepository.codificarContrasena(dataEmpresa.contrasena);
-        await UsuarioRepository.createOrUpdate(dataUsuario, transaccion);
+          dataUsuario.idEmpresa = empresa.id;
+          dataUsuario.idRol = rol.id;
+          dataUsuario.idTipoDocumento = empresa.idParametro;
+          dataUsuario.email = dataEmpresa.correoElectronico;
+          dataUsuario.contrasena = await AuthRepository.codificarContrasena(dataEmpresa.contrasena);
+          usuario = await UsuarioRepository.createOrUpdate(dataUsuario, transaccion);
 
-        await transaction.commit(transaccion);
-        return empresa;
-      } else {
-        msg.forEach(function (v) { msgtexto += v; msgtexto += ' | '; });
-        throw new Error(
-          'Ya se encuentra registrado la Empresa con: ' + msgtexto
-        );
+          if (usuario.idRol) {
+            await PermisoRepository.setInsertPermiso(usuario);
+          }
+
+          await transaction.commit(transaccion);
+          return empresa;
+        } else {
+          msg.forEach(function (v) { msgtexto += v; msgtexto += ' | '; });
+          throw new Error(
+            'Ya se encuentra registrado la Empresa con: ' + msgtexto
+          );
+        }
+      } catch (err) {
+        await transaction.rollback(transaccion);
+        throw new ErrorApp(err.message, 400);
       }
-    } catch (err) {
-      await transaction.rollback(transaccion);
-      throw new ErrorApp(err.message, 400);
+    } else {
+      try {
+        empresa = await EmpresaRepository.createOrUpdate(dataEmpresa);
+        return empresa;
+      } catch (err) {
+        throw new ErrorApp(err.message, 400);
+      }
     }
   }
-
-  const quitarEspacioVacioPrincFin = (formularioJson) => {
-    const json = {};
-    Object.entries(formularioJson).forEach(([key, value]) => {
-      json[key] = value.trim();
-    });
-    return json;
-  };
 
   const verifyEmpresaRegistrationExists = async (data) => {
     const msg = [];
@@ -125,7 +130,6 @@ module.exports = function empresaService (repositories, helpers, res) {
     listar,
     createOrUpdate,
     verifyEmpresaRegistrationExists,
-    quitarEspacioVacioPrincFin,
     deleteItem
   };
 };

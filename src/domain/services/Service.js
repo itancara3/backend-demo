@@ -77,10 +77,23 @@ function validate (data, valueObjects = {}) {
   }
 }
 
+const quitarEspacioVacioPrincFin = (formularioJson) => {
+  const json = {};
+  Object.entries(formularioJson).forEach(([key, value]) => {
+    if (value === true || value === false || toString.call(value) === '[object Boolean]') {
+      json[key] = value;
+    } else {
+      json[key] = value.trim();
+    }
+  });
+  return json;
+};
+
 module.exports = {
   findAll,
   deleteItem,
   findById,
   createOrUpdate,
-  validate
+  validate,
+  quitarEspacioVacioPrincFin
 };

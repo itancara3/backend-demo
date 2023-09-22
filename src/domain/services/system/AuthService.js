@@ -9,7 +9,7 @@ const { config } = require('../../../common');
 const { iss } = require('../../lib/util');
 const { generateToken } = require('../../../application/lib/auth');
 const moment = require('moment');
-const EmpresaRepository = require('../../../infrastructure/repositories/system/EmpresaRepository');
+// const EmpresaRepository = require('../../../infrastructure/repositories/system/EmpresaRepository');
 
 module.exports = function authService (repositories, helpers, res) {
   const {
@@ -20,11 +20,11 @@ module.exports = function authService (repositories, helpers, res) {
     MenuRepository,
     PermisoRepository
   } = repositories;
-  const UsuarioService = require('./UsuarioService')(
+  /* const UsuarioService = require('./UsuarioService')(
     repositories,
     helpers,
     res
-  );
+  ); */
   const issuer = new Issuer(iss);
 
   const cliente = new issuer.Client(config.openid.client);
@@ -160,7 +160,7 @@ module.exports = function authService (repositories, helpers, res) {
     }
   }
 
-  async function registrarLogin (user, info, resultadoState) {
+  /* async function registrarLogin (user, info, resultadoState) {
     info.state = resultadoState.state;
     const respuesta = await UsuarioService.getResponse(user, null, info);
     resultadoState.id_usuario = user.id;
@@ -168,12 +168,12 @@ module.exports = function authService (repositories, helpers, res) {
     resultadoState._user_created = user.id;
     await AuthRepository.createOrUpdate(resultadoState);
     return respuesta;
-  }
+  } */
 
   async function refreshToken (idRol, idUsuario) {
     const existeUsuario = await UsuarioRepository.findById(idUsuario);
     if (!existeUsuario) {
-      throw new Error('No existe el usuario.');
+      throw new Error('No existe el Correo Electronico insertado.');
     }
     return getResponse(existeUsuario, idRol);
   }
@@ -259,50 +259,18 @@ module.exports = function authService (repositories, helpers, res) {
     }
   }
 
-  /* async function login (usuario, contrasena, request) {
-    try {
-      const existeUsuario = await UsuarioRepository.login({ usuario });
-      if (!existeUsuario) {
-        throw new Error('No existe el usuario.');
-      }
-      const respuestaVerificacion = await AuthRepository.verificarContrasena(
-        contrasena,
-        existeUsuario.contrasena
-      );
-      if (!respuestaVerificacion) {
-        throw new Error('Error en su usuario o su contraseña.');
-      }
-      delete existeUsuario.contrasena;
-      const respuesta = await getResponse(existeUsuario);
-      await AuthRepository.deleteItemCond({ idUsuario: existeUsuario.id });
-      await AuthRepository.createOrUpdate({
-        ip          : request.ipInfo.ip,
-        navegador   : request.ipInfo.navigator,
-        userAgent   : request.headers['user-agent'],
-        token       : respuesta.token,
-        idUsuario   : existeUsuario.id,
-        idRol       : existeUsuario.roles.map((x) => x.id).join(','),
-        idEntidad   : existeUsuario.entidad.id,
-        userCreated : existeUsuario.id
-      });
-      return respuesta;
-    } catch (err) {
-      throw new ErrorApp(err.message, 400);
-    }
-  } */
-
   async function login (email, contrasena, request) {
     try {
       const existeUsuario = await UsuarioRepository.login({ email });
       if (!existeUsuario) {
-        throw new Error('No existe el usuario.');
+        throw new Error('No existe el Correo electrónico insertado.');
       }
       const respuestaVerificacion = await AuthRepository.verificarContrasena(
         contrasena,
         existeUsuario.contrasena
       );
       if (!respuestaVerificacion) {
-        throw new Error('Error en su usuario o su contraseña.');
+        throw new Error('El Correo electrónico o la Contraseña que ingresó son incorrectos.');
       }
       delete existeUsuario.contrasena;
       const respuesta = await getResponse(existeUsuario);

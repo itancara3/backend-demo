@@ -1,6 +1,8 @@
 'use strict';
 
 const { errorHandler } = require('../lib/util');
+const Sequelize = require('sequelize');
+const db = require('../../common/config/db');
 
 async function createOrUpdate (object, model, t) {
   const cond = {
@@ -154,11 +156,35 @@ async function deleteItemCond (params, model, t) {
     throw new Error(e);
   }
 }
+
+const reuseConnectionForStringSQL = () => {
+  try {
+    const conex = new Sequelize(db.database, db.username, db.password, {
+      host             : db.host,
+      dialect          : db.dialect,
+      // operatorsAliases : false,
+      operatorsAliases : 0,
+      pool             : {
+        max     : db.pool.max,
+        min     : db.pool.min,
+        acquire : db.pool.acquire,
+        idle    : db.pool.idle
+      },
+      // disable logging; default: console.log
+      logging: false
+    });
+    return conex;
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
 module.exports = {
   deleteItemCond,
   findOne,
   deleteItem,
   inactivateItem,
   createOrUpdate,
-  findById
+  findById,
+  reuseConnectionForStringSQL
 };
