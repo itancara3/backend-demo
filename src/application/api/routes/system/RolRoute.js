@@ -4,6 +4,7 @@ module.exports = function setupSocio (api, controllers, middlewares) {
   const { AuthMiddleware } = middlewares;
 
   api.get('/roles', RolController.listar);
+  api.get('/roles/empresa/:id', RolController.listarPorEmpresa);
   api.post('/roles',  RolController.crear);
   api.put('/roles/:id', RolController.actualizar);
   api.get('/roles/:id', RolController.findOne);

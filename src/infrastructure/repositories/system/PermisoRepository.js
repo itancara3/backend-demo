@@ -202,10 +202,12 @@ module.exports = function modulossRepository (models, Sequelize) {
   async function setInsertPermiso (params, response) {
     const { idRol } = params;
     const conexDB = Repository.reuseConnectionForStringSQL();
-    conexDB.query(`SELECT set_insert_permiso('${idRol}')`).then((results) => {
+    conexDB.query(`SELECT set_insert_permiso_admin('${idRol}')`).then((results) => {
       // console.log(results);
+      conexDB.close();
     }).catch((error) => {
       console.error(`Error: ${error.message}`);
+      conexDB.close();
     });
   }
 

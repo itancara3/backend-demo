@@ -25,6 +25,14 @@ module.exports = function rolService (repositories, helpers, res) {
     }
   }
 
+  async function listarRolesPorEmpresa (id) {
+    try {
+      return RolRepository.findAllByIdEmpresa(id);
+    } catch (error) {
+      throw new ErrorApp(error.message, 400);
+    }
+  }
+
   async function listarPermisos (idRol) {
     debug('Lista de roles|filtros');
     try {
@@ -216,6 +224,7 @@ module.exports = function rolService (repositories, helpers, res) {
     findOne,
     listarPermisos,
     findAll,
+    listarRolesPorEmpresa,
     findById,
     createOrUpdate,
     deleteItem,

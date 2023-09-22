@@ -22,6 +22,14 @@ module.exports = function userService (repositories, helpers, res) {
     }
   }
 
+  async function listarUsuariosPorEmpresa (id) {
+    try {
+      return UsuarioRepository.findAllByIdEmpresa(id);
+    } catch (error) {
+      throw new ErrorApp(error.message, 400);
+    }
+  }
+
   async function mostrar (id) {
     try {
       return UsuarioRepository.findOne({ id });
@@ -258,6 +266,7 @@ module.exports = function userService (repositories, helpers, res) {
     cambiarContrasena,
     asignarRoles,
     listarUsuarios,
+    listarUsuariosPorEmpresa,
     mostrar,
     createOrUpdate,
     eliminar,

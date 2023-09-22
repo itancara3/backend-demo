@@ -5,6 +5,7 @@ module.exports = function setupUsuario (api, controllers, middlewares) {
   const { AuthMiddleware } = middlewares;
 
   api.get('/usuarios', UsuarioController.listar);
+  api.get('/usuarios/empresa/:id', UsuarioController.listarPorEmpresa);
   api.get('/usuarios/:id', UsuarioController.mostrar);
   api.post('/usuarios', UsuarioController.crear);
   api.put('/usuarios/:id', UsuarioController.actualizar);

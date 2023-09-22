@@ -71,7 +71,7 @@ module.exports = function empresaService (repositories, helpers, res) {
           dataUsuario.idEmpresa = empresa.id;
           dataUsuario.idRol = rol.id;
           dataUsuario.idTipoDocumento = empresa.idParametro;
-          dataUsuario.email = dataEmpresa.correoElectronico;
+          dataUsuario.email = dataEmpresa.email;
           dataUsuario.contrasena = await AuthRepository.codificarContrasena(dataEmpresa.contrasena);
           usuario = await UsuarioRepository.createOrUpdate(dataUsuario, transaccion);
 

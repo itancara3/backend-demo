@@ -16,6 +16,16 @@ module.exports = function setupUsuarioController (services) {
     }
   }
 
+  async function listarPorEmpresa (req, res) {
+    try {
+      const { id } = req.params;
+      const respuesta = await UsuarioService.listarUsuariosPorEmpresa(id);
+      return res.status(200).send(new Respuesta('OK', Finalizado.OK, respuesta));
+    } catch (error) {
+      return res.status(error.httpCode || HttpCodes.userError).json(new Respuesta(error.message, Finalizado.FAIL));
+    }
+  }
+
   async function mostrar (req, res) {
     try {
       const { id } = req.params;
@@ -86,6 +96,7 @@ module.exports = function setupUsuarioController (services) {
     cambiarContrasena,
     asignarRoles,
     listar,
+    listarPorEmpresa,
     mostrar,
     crear,
     actualizar,
