@@ -45,7 +45,6 @@ const AuthMiddleware = function (services) {
           // permisos : permisos
         };
         const tienePermiso = await AuthService.verificarPermisos(consulta);
-        console.log(tienePermiso);
         if (!tienePermiso) {
           throw new Error('No tiene permisos para realizar esta accion.');
         }

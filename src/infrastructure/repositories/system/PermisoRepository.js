@@ -199,6 +199,18 @@ module.exports = function modulossRepository (models, Sequelize) {
     return result.toJSON();
   }
 
+  async function setInsertPermiso (params, response) {
+    const { idRol } = params;
+    const conexDB = Repository.reuseConnectionForStringSQL();
+    conexDB.query(`SELECT set_insert_permiso_admin('${idRol}')`).then((results) => {
+      // console.log(results);
+      conexDB.close();
+    }).catch((error) => {
+      console.error(`Error: ${error.message}`);
+      conexDB.close();
+    });
+  }
+
   return {
     findByRoles,
     findByAplicaciones,
@@ -207,6 +219,8 @@ module.exports = function modulossRepository (models, Sequelize) {
     findOne,
     findById       : (id) => Repository.findById(id, permiso),
     createOrUpdate : (item, t) => Repository.createOrUpdate(item, permiso, t),
-    deleteItem     : (id, t) => Repository.deleteItem(id, permiso, t)
+    deleteItem     : (id, t) => Repository.deleteItem(id, permiso, t),
+    deleteItemCond : (params, t) => Repository.deleteItemCond(params, permiso, t),
+    setInsertPermiso
   };
 };

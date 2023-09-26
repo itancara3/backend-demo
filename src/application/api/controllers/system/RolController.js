@@ -3,6 +3,7 @@
 const debug = require('debug')('app:controller:REPORTE');
 const { Respuesta } = require('../../../lib/respuesta');
 const { Finalizado, HttpCodes } = require('../../../lib/globals');
+const { async } = require('validate.js');
 
 module.exports = function setupRolController (services) {
   const {
@@ -13,6 +14,16 @@ module.exports = function setupRolController (services) {
     try {
       debug('Recuperando roles');
       const respuesta = await RolService.findAll(req.query);
+      return res.status(200).send(new Respuesta('OK', Finalizado.OK, respuesta));
+    } catch (error) {
+      return res.status(error.httpCode || HttpCodes.userError).json(new Respuesta(error.message, Finalizado.FAIL));
+    }
+  }
+
+  async function listarPorEmpresa (req, res) {
+    try {
+      const { id } = req.params;
+      const respuesta = await RolService.listarRolesPorEmpresa(id);
       return res.status(200).send(new Respuesta('OK', Finalizado.OK, respuesta));
     } catch (error) {
       return res.status(error.httpCode || HttpCodes.userError).json(new Respuesta(error.message, Finalizado.FAIL));
@@ -60,6 +71,7 @@ module.exports = function setupRolController (services) {
     }
   }
   async function crear (req, res) {
+    console.log(req.body);
     try {
       const data = req.body;
       debug('creando rol');
@@ -88,6 +100,7 @@ module.exports = function setupRolController (services) {
     findOne,
     listarPermisos,
     listar,
+    listarPorEmpresa,
     recuperarPorId,
     eliminar,
     actualizar,

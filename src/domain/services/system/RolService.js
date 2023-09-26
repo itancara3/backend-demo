@@ -25,6 +25,14 @@ module.exports = function rolService (repositories, helpers, res) {
     }
   }
 
+  async function listarRolesPorEmpresa (id) {
+    try {
+      return RolRepository.findAllByIdEmpresa(id);
+    } catch (error) {
+      throw new ErrorApp(error.message, 400);
+    }
+  }
+
   async function listarPermisos (idRol) {
     debug('Lista de roles|filtros');
     try {
@@ -84,33 +92,54 @@ module.exports = function rolService (repositories, helpers, res) {
 
   async function createOrUpdate (data) {
     debug('Crear o actualizar rol');
+    let transaccion;
     let rol;
     try {
-      rol = await RolRepository.createOrUpdate(data);
+      transaccion = await transaction.create();
+      rol = await RolRepository.createOrUpdate(data, transaccion);
+
       if (data.menus) {
-        await RolMenuRepository.deleteItemCond({ idRol: rol.id });
-        for (const menu of data.menus) {
-          await RolMenuRepository.createOrUpdate({
-            idRol       : rol.id,
-            idMenu      : menu,
-            userCreated : data.userCreated || data.userUpdated
-          });
-        }
+        console.log(data.menuPermisos);
+        await PermisoRepository.deleteItemCond({ idRol: rol.id });
+        // for (const menuPermiso of data.menuPermisos) {
+        //   await PermisoRepository.createOrUpdate({
+        //     idRol       : rol.id,
+        //     idMenu      : menuPermiso.id,
+        //     acceso      : true,
+        //     estado      : 'ACTIVO',
+        //     userCreated : data.userCreated || data.userUpdated
+        //   }, transaccion);
+        // }
       }
-
-      if (data.permisos) {
-        await RolPermisoRepository.deleteItemCond({ idRol: rol.id });
-
-        for (const permiso of data.permisos) {
-          await RolPermisoRepository.createOrUpdate({
-            idRol       : rol.id,
-            idPermiso   : permiso,
-            userCreated : data.userCreated || data.userUpdated
-          });
-        }
+      for (const menuPermiso of data.menuPermisos) {
+        await PermisoRepository.createOrUpdate(
+          {
+            idRol         : rol.id,
+            idMenuPermiso : menuPermiso.id,
+            acceso        : true,
+            estado        : 'ACTIVO',
+            userCreated   : data.userCreated || data.userUpdated
+          },
+          transaccion
+        );
       }
+      // }
+
+      // if (data.permisos) {
+      //   await RolPermisoRepository.deleteItemCond({ idRol: rol.id });
+
+      //   for (const permiso of data.permisos) {
+      //     await RolPermisoRepository.createOrUpdate({
+      //       idRol       : rol.id,
+      //       idPermiso   : permiso,
+      //       userCreated : data.userCreated || data.userUpdated
+      //     });
+      //   }
+      // }
+      await transaction.commit(transaccion);
       return rol;
     } catch (err) {
+      await transaction.rollback(transaccion);
       throw new ErrorApp(err.message, 400);
     }
   }
@@ -195,6 +224,7 @@ module.exports = function rolService (repositories, helpers, res) {
     findOne,
     listarPermisos,
     findAll,
+    listarRolesPorEmpresa,
     findById,
     createOrUpdate,
     deleteItem,

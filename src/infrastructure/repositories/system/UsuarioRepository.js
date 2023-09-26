@@ -37,7 +37,7 @@ module.exports = function usuariosRepository (models, Sequelize) {
       'estado'
     ];
     query.where = {};
-
+    console.log(params);
     if (params.exclude) {
       query.where.id = {
         [Op.notIn]: Array.isArray(params.exclude)
@@ -110,6 +110,117 @@ module.exports = function usuariosRepository (models, Sequelize) {
       }
     ];
 
+    const result = await usuario.findAndCountAll(query);
+    return toJSON(result);
+  }
+
+  async function findAllByIdEmpresa (params = {}) {
+    // const query = getQuery(params);
+    const query = {};
+    query.attributes = [
+      'id',
+      'idEmpresa',
+      'idRol',
+      'idTipoDocumento',
+      'nroDocumento',
+      'nombres',
+      'apellidos',
+      'fechaNacimiento',
+      'contrasena',
+      'telefono',
+      'email',
+      'direccion',
+      'ciudad',
+      'provinciaEstado',
+      'pais',
+      'codigoPostal',
+      'cargo',
+      'tipo',
+      'numeroFiscal',
+      'nombreFiscal',
+      'imagenUrl',
+      'colorFondo',
+      'colorTexto',
+      'token',
+      'estado'
+    ];
+    query.where = {};
+    if (params.exclude) {
+      query.where.id = {
+        [Op.notIn]: Array.isArray(params.exclude)
+          ? params.exclude
+          : [params.exclude]
+      };
+    }
+
+    if (params.estado) {
+      query.where.estado = params.estado;
+    }
+
+    if (params.search) {
+      query.where = {
+        ...query.where,
+        [Op.or]: [
+          {
+            nombres: {
+              [Op.iLike]: `%${params.search}%`
+            }
+          },
+          {
+            apellidos: {
+              [Op.iLike]: `%${params.search}%`
+            }
+          }
+        ]
+      };
+    }
+
+    if (params.nombres) {
+      query.where.nombres = {
+        [Op.iLike]: `%${params.nombres}%`
+      };
+    }
+
+    if (params.apellidos) {
+      query.where.primerApellido = {
+        [Op.iLike]: `%${params.primerApellido}%`
+      };
+    }
+
+    if (params.nroDocumento) {
+      query.where.nroDocumento = {
+        [Op.iLike]: `%${params.nroDocumento}%`
+      };
+    }
+
+    if (params.email) {
+      query.where.email = {
+        [Op.iLike]: `%${params.email}%`
+      };
+    }
+
+    if (params.telefono) {
+      query.where.telefono = {
+        [Op.iLike]: `%${params.telefono}%`
+      };
+    }
+
+    query.where = {
+      idEmpresa: params
+    };
+
+    query.include = [
+      {
+        attributes : ['id', 'numeroDocumento', 'nombreEmpresa'],
+        model      : empresa,
+        as         : 'empresa'
+      },
+      {
+        model : rol,
+        as    : 'rol'
+      }
+    ];
+    console.log(query);
     const result = await usuario.findAndCountAll(query);
     return toJSON(result);
   }
@@ -193,47 +304,6 @@ module.exports = function usuariosRepository (models, Sequelize) {
     return null;
   }
 
-  /* async function login (params = {}) {
-    const query = {};
-    query.attributes = [
-      'id',
-      'contrasena',
-      'usuario',
-      'nombres',
-      'primerApellido',
-      'segundoApellido',
-      'nroDocumento',
-      'telefono',
-      'celular',
-      'correoElectronico',
-      'foto',
-      'estado'
-    ];
-
-    query.where = params;
-
-    query.include = [
-      {
-        attributes : ['id', 'nombre', 'sigla', 'nivel', 'idEntidad'],
-        model      : entidad,
-        as         : 'entidad'
-      },
-      {
-        required   : true,
-        through    : { attributes: [] },
-        attributes : ['id', 'idEntidad', 'nombre', 'descripcion', 'estado'],
-        model      : rol,
-        as         : 'roles'
-      }
-    ];
-
-    const result = await usuario.findOne(query);
-    if (result) {
-      return result.toJSON();
-    }
-    return null;
-  } */
-
   async function login (params = {}) {
     const query = {};
     query.attributes = [
@@ -268,9 +338,15 @@ module.exports = function usuariosRepository (models, Sequelize) {
     query.include = [
       {
         required   : true,
-        attributes : ['id', 'numeroDocumento', 'nombreEmpresa'],
-        model      : empresa,
-        as         : 'empresa'
+        attributes : [
+          'id',
+          'numeroDocumento',
+          'nombreEmpresa',
+          'imagenUrl',
+          'empresaUnipersonal'
+        ],
+        model : empresa,
+        as    : 'empresa'
       },
       {
         required   : true,
@@ -341,7 +417,7 @@ module.exports = function usuariosRepository (models, Sequelize) {
   async function verificarCorreoElectronico (params) {
     const query = {};
     query.where = {};
-
+    console.log(params);
     if (params.email) {
       Object.assign(query.where, {
         email: params.email
@@ -373,7 +449,8 @@ module.exports = function usuariosRepository (models, Sequelize) {
         [Op.not]: params.id
       };
     }
-
+    console.log('----------------');
+    console.log(query.include);
     const result = await usuario.findOne(query);
     if (result) {
       return result.toJSON();
@@ -387,6 +464,7 @@ module.exports = function usuariosRepository (models, Sequelize) {
     findById,
     verificarCorreoElectronico,
     findAll,
+    findAllByIdEmpresa,
     findOne,
     createOrUpdate,
     deleteItem: (id, t) => Repository.deleteItem(id, usuario, t)

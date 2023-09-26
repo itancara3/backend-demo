@@ -64,6 +64,64 @@ module.exports = function rolesRepository (models, Sequelize) {
     return toJSON(result);
   }
 
+  async function findAllByIdEmpresa (params = {}) {
+    // const query = getQuery(params);
+    const query = {};
+    query.attributes = attributes;
+    query.where = {};
+    query.where = {
+      idEmpresa: params
+    };
+    query.include = [
+      {
+        attributes: [
+          'id',
+          'nombreEmpresa',
+          'nombreComercial',
+          'personaNatural',
+          'empresaUnipersonal',
+          'direccionCentral',
+          'estado'
+        ],
+        model : empresa,
+        as    : 'empresa'
+      }
+      // {
+      //   through : { attributes: [] },
+      //   model   : menu,
+      //   as      : 'menus'
+      // }
+    ];
+    if (params.idEmpresa) {
+      query.where.idEmpresa = params.idEmpresa;
+    }
+
+    if (params.empresa && !params.idEmpresas) {
+      query.where.idEmpresa = {
+        [Op.in]: params.empresa
+      };
+    }
+
+    if (params.estado) {
+      query.where.estado = params.estado;
+    }
+
+    if (params.nombre) {
+      query.where.nombre = {
+        [Op.iLike]: `%${params.nombre}%`
+      };
+    }
+
+    if (params.descripcion) {
+      query.where.nombre = {
+        [Op.iLike]: `%${params.descripcion}%`
+      };
+    }
+
+    const result = await rol.findAndCountAll(query);
+    return toJSON(result);
+  }
+
   async function findOne (params = {}) {
     const query = {
       attributes : ['id', 'idEmpresa', 'nombre', 'descripcion', 'estado'],
@@ -100,6 +158,7 @@ module.exports = function rolesRepository (models, Sequelize) {
 
   return {
     findAll,
+    findAllByIdEmpresa,
     findOne,
     findById       : id => Repository.findById(id, rol, attributes),
     createOrUpdate : (item, t) => Repository.createOrUpdate(item, rol, t),
