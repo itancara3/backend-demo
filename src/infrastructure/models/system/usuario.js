@@ -143,11 +143,12 @@ module.exports = (sequelize, DataTypes) => {
       field     : 'token'
     },
     estado: {
-      type         : DataTypes.INTEGER,
-      defaultValue : 1,
+      type         : DataTypes.ENUM,
+      values       : ['ACTIVO', 'INACTIVO'],
+      defaultValue : 'ACTIVO',
       allowNull    : false,
       xlabel       : lang.t('fields.estado'),
-      field        : '_estado'
+      field        : 'estado'
     }
   };
 

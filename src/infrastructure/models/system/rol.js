@@ -22,11 +22,11 @@ module.exports = (sequelize, DataTypes) => {
       xlabel : lang.t('fields.descripcion')
     },
     estado: {
-      type         : DataTypes.INTEGER,
-      defaultValue : 1,
-      allowNull    : false,
+      type         : DataTypes.ENUM,
+      values       : ['ACTIVO', 'INACTIVO'],
+      defaultValue : 'ACTIVO',
       xlabel       : lang.t('fields.estado'),
-      field        : '_estado'
+      field        : 'estado'
     }
   };
 
