@@ -1,13 +1,13 @@
 'use strict';
 
+const sequelize = require('sequelize');
 const { getQuery, toJSON } = require('../../lib/util');
 const Repository = require('../Repository');
 
-module.exports = function rolesRepository (models, Sequelize) {
-  const { rol, ruta, menu, empresa, permiso } = models;
-  const Op = Sequelize.Op;
-
-  const attributes = ['id', 'idEmpresa', 'nombre', 'descripcion', 'estado', 'createdAt'];
+module.exports = function sucursalRepository (models, Sequelize) {
+  const { sucursal, empresa } = models;
+  const Op = sequelize.Op;
+  const attributes = ['id', 'idEmpresa', 'nroSucursal', 'nombre', 'descripcion', 'ciudad', 'pais', 'createdAt'];
 
   async function findAll (params = {}) {
     const query = getQuery(params);
@@ -19,26 +19,18 @@ module.exports = function rolesRepository (models, Sequelize) {
         attributes: [
           'id',
           'nombreEmpresa',
-          'nombreComercial',
-          'personaNatural',
-          'empresaUnipersonal',
-          'direccionCentral',
-          'estado'
+          'empresaUnipersonal'
         ],
         model : empresa,
         as    : 'empresa'
       }
-      // {
-      //   through : { attributes: [] },
-      //   model   : menu,
-      //   as      : 'menus'
-      // }
     ];
+
     if (params.idEmpresa) {
       query.where.idEmpresa = params.idEmpresa;
     }
 
-    if (params.empresa && !params.idEmpresas) {
+    if (params.empresa && !params.idEmpresa) {
       query.where.idEmpresa = {
         [Op.in]: params.empresa
       };
@@ -59,8 +51,7 @@ module.exports = function rolesRepository (models, Sequelize) {
         [Op.iLike]: `%${params.descripcion}%`
       };
     }
-
-    const result = await rol.findAndCountAll(query);
+    const result = await sucursal.findAndCountAll(query);
     return toJSON(result);
   }
 
@@ -76,21 +67,13 @@ module.exports = function rolesRepository (models, Sequelize) {
         attributes: [
           'id',
           'nombreEmpresa',
-          'nombreComercial',
-          'personaNatural',
-          'empresaUnipersonal',
-          'direccionCentral',
-          'estado'
+          'empresaUnipersonal'
         ],
         model : empresa,
         as    : 'empresa'
       }
-      // {
-      //   through : { attributes: [] },
-      //   model   : menu,
-      //   as      : 'menus'
-      // }
     ];
+
     if (params.idEmpresa) {
       query.where.idEmpresa = params.idEmpresa;
     }
@@ -117,13 +100,13 @@ module.exports = function rolesRepository (models, Sequelize) {
       };
     }
 
-    const result = await rol.findAndCountAll(query);
+    const result = await sucursal.findAndCountAll(query);
     return toJSON(result);
   }
 
   async function findOne (params = {}) {
     const query = {
-      attributes : ['id', 'idEmpresa', 'nombre', 'descripcion', 'estado'],
+      attributes : ['id', 'idEmpresa', 'nroSucursal', 'nombre', 'descripcion', 'estado'],
       where      : params
     };
 
@@ -136,31 +119,37 @@ module.exports = function rolesRepository (models, Sequelize) {
         model : empresa,
         as    : 'empresa'
       }
-      // {
-      //   attributes : [],
-      //   model      : permiso,
-      //   as         : 'permisos',
-      //   where      : { idRol: params.id }
-      // include    : {
-      //   model : menu,
-      //   as    : 'menu'
-      // where : { id: permiso.idMenuPermiso }
-      // }
-      // }
     ];
-    const result = await rol.findOne(query);
+
+    const result = await sucursal.findOne(query);
     if (!result) {
       return null;
     }
     return result.toJSON();
   }
 
+  async function verificarNroSucursal (params) {
+    const query = {};
+    query.where = {};
+
+    if (params.nroSucursal) {
+      query.where = {
+        nroSucursal: params.nroSucursal
+      };
+    }
+
+    const result = await sucursal.findOne(query);
+    if (result) {
+      return result.toJSON();
+    }
+    return null;
+  }
+
   return {
     findAll,
     findAllByIdEmpresa,
     findOne,
-    findById       : id => Repository.findById(id, rol, attributes),
-    createOrUpdate : (item, t) => Repository.createOrUpdate(item, rol, t),
-    deleteItem     : (id, t) => Repository.deleteItem(id, rol, t)
+    verificarNroSucursal,
+    createOrUpdate: (item, t) => Repository.createOrUpdate(item, sucursal, t)
   };
 };

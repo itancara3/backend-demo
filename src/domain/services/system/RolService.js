@@ -99,7 +99,6 @@ module.exports = function rolService (repositories, helpers, res) {
       rol = await RolRepository.createOrUpdate(data, transaccion);
 
       if (data.menus) {
-        console.log(data.menuPermisos);
         await PermisoRepository.deleteItemCond({ idRol: rol.id });
         // for (const menuPermiso of data.menuPermisos) {
         //   await PermisoRepository.createOrUpdate({
