@@ -7,7 +7,27 @@ const Repository = require('../Repository');
 module.exports = function sucursalRepository (models, Sequelize) {
   const { sucursal, empresa } = models;
   const Op = sequelize.Op;
-  const attributes = ['id', 'idEmpresa', 'nroSucursal', 'nombre', 'descripcion', 'ciudad', 'pais', 'createdAt'];
+  const attributes = [
+    'id',
+    'idEmpresa',
+    'nroSucursal',
+    'nombre',
+    'descripcion',
+    'direccion',
+    'zona',
+    'ciudad',
+    'ciudadAbreviatura',
+    'pais',
+    'email',
+    'sitioWeb',
+    'telefono',
+    'fax',
+    'celular',
+    'esFiscal',
+    'precioVenta',
+    'estado',
+    'createdAt'
+  ];
 
   async function findAll (params = {}) {
     const query = getQuery(params);
@@ -16,13 +36,9 @@ module.exports = function sucursalRepository (models, Sequelize) {
 
     query.include = [
       {
-        attributes: [
-          'id',
-          'nombreEmpresa',
-          'empresaUnipersonal'
-        ],
-        model : empresa,
-        as    : 'empresa'
+        attributes : ['id', 'nombreEmpresa', 'empresaUnipersonal'],
+        model      : empresa,
+        as         : 'empresa'
       }
     ];
 
@@ -64,13 +80,9 @@ module.exports = function sucursalRepository (models, Sequelize) {
     };
     query.include = [
       {
-        attributes: [
-          'id',
-          'nombreEmpresa',
-          'empresaUnipersonal'
-        ],
-        model : empresa,
-        as    : 'empresa'
+        attributes : ['id', 'nombreEmpresa', 'empresaUnipersonal'],
+        model      : empresa,
+        as         : 'empresa'
       }
     ];
 
@@ -106,18 +118,15 @@ module.exports = function sucursalRepository (models, Sequelize) {
 
   async function findOne (params = {}) {
     const query = {
-      attributes : ['id', 'idEmpresa', 'nroSucursal', 'nombre', 'descripcion', 'estado'],
+      attributes : attributes,
       where      : params
     };
 
     query.include = [
       {
-        attributes: [
-          'id',
-          'nombreEmpresa'
-        ],
-        model : empresa,
-        as    : 'empresa'
+        attributes : ['id', 'nombreEmpresa'],
+        model      : empresa,
+        as         : 'empresa'
       }
     ];
 
@@ -132,12 +141,22 @@ module.exports = function sucursalRepository (models, Sequelize) {
     const query = {};
     query.where = {};
 
+    // if (params.nroSucursal) {
+    //   query.where = {
+    //     nroSucursal: params.nroSucursal
+    //   };
+    // }
+
+    // if (params.id) {
+    //   query.where.id = params.id;
+    // }
     if (params.nroSucursal) {
       query.where = {
         nroSucursal: params.nroSucursal
       };
     }
-
+    console.log('----------------');
+    console.log(query);
     const result = await sucursal.findOne(query);
     if (result) {
       return result.toJSON();
@@ -150,6 +169,7 @@ module.exports = function sucursalRepository (models, Sequelize) {
     findAllByIdEmpresa,
     findOne,
     verificarNroSucursal,
-    createOrUpdate: (item, t) => Repository.createOrUpdate(item, sucursal, t)
+    createOrUpdate : (item, t) => Repository.createOrUpdate(item, sucursal, t),
+    deleteItem     : (id, t) => Repository.deleteItem(id, sucursal, t)
   };
 };

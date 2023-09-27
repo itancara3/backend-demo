@@ -39,18 +39,28 @@ module.exports = function sucursalService (repositories, helpers, res) {
     let transaccion;
     try {
       transaccion = await transaction.create();
-      const existeSucursal = await SucursalRepository.verificarNroSucursal(data);
+      const existeSucursal = await SucursalRepository.verificarNroSucursal({
+        nroSucursal: data.nroSucursal
+      });
       //   if (data.id) {
       //     existeSucursal = await SucursalRepository.findOne({
       //       id          : data.id,
       //       nroSucursal : data.nroSucursal
       //     }, transaccion);s
       //   }
+
       if (existeSucursal) {
         if (existeSucursal.nroSucursal === data.nroSucursal) {
-          throw new Error(
-            `Ya se encuentra registrado una sucursal con el numero de sucursal "${data.nroSucursal}"`
-          );
+          if (!data.id || data.id !== existeSucursal.id) {
+            throw new Error(
+                `Ya se encuentra registrado la sucursal Nro: "${data.nroSucursal}"`
+            );
+          }
+          // if (data.id !== existeSucursal.id) {
+          //   throw new Error(
+          //     `Ya se encuentra registrado una sucursal con el numero de sucursal "${data.nroSucursal}"`
+          //   );
+          // }
         }
       }
       const sucursalCreada = await SucursalRepository.createOrUpdate(data, transaccion);
