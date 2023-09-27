@@ -15,7 +15,10 @@ module.exports = function associations (models) {
     // aplicacion,
     // aplicacionPermiso,
     empresa,
-    parametro
+    parametro,
+    cliente,
+    clientePersonaContacto,
+    clienteActividad
     // CONTRATOS
     // Solicitud,
     // Adjunto,
@@ -47,6 +50,21 @@ module.exports = function associations (models) {
 
   permiso.belongsTo(menu, { foreignKey: { name: 'idMenuPermiso' }, as: 'menu' });
   menu.hasMany(permiso,  { foreignKey: { name: 'idMenuPermiso' }, as: 'permisos' });
+
+  clientePersonaContacto.belongsTo(cliente, { foreignKey: { name: 'idCliente' }, as: 'cliente' });
+  cliente.hasMany(clientePersonaContacto,  { foreignKey: { name: 'idCliente' }, as: 'clientePersonaContactos' });
+
+  cliente.belongsTo(empresa, { foreignKey: { name: 'idEmpresa' }, as: 'empresa' });
+  empresa.hasMany(cliente,  { foreignKey: { name: 'idEmpresa' }, as: 'clientes' });
+
+  cliente.belongsTo(parametro, { foreignKey: { name: 'idTipoDocumento' }, as: 'parametro' });
+  parametro.hasMany(cliente,  { foreignKey: { name: 'idTipoDocumento' }, as: 'clientes' });
+
+  cliente.belongsTo(clienteActividad, { foreignKey: { name: 'idClienteActividad' }, as: 'clienteActividad' });
+  clienteActividad.hasMany(cliente,  { foreignKey: { name: 'idClienteActividad' }, as: 'clientes' });
+
+  clienteActividad.belongsTo(empresa, { foreignKey: { name: 'idEmpresa' }, as: 'empresa' });
+  empresa.hasMany(clienteActividad,  { foreignKey: { name: 'idEmpresa' }, as: 'clienteActividads' });
 
   /* usuario.belongsTo(empresa, { foreignKey: { name: 'idEmpresa' }, as: 'empresa' });
   empresa.hasMany(usuario,  { foreignKey: { name: 'idEmpresa' }, as: 'usuarios' });

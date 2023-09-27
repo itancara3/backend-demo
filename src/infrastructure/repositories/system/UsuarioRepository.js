@@ -449,13 +449,31 @@ module.exports = function usuariosRepository (models, Sequelize) {
         [Op.not]: params.id
       };
     }
-    console.log('----------------');
-    console.log(query.include);
+
     const result = await usuario.findOne(query);
     if (result) {
       return result.toJSON();
     }
     return null;
+  }
+
+  function findAllNombreApellidoUsuario (id = {}) {
+    const query = {};
+    query.attributes = [
+      'id',
+      'idEmpresa',
+      'nombres',
+      'apellidos',
+      'estado'
+    ];
+    query.where = {};
+    query.where = {
+      [Op.and]: [
+        { estado: 'ACTIVO' },
+        { idEmpresa: id }
+      ]
+    };
+    return usuario.findAndCountAll(query);
   }
 
   return {
@@ -467,6 +485,7 @@ module.exports = function usuariosRepository (models, Sequelize) {
     findAllByIdEmpresa,
     findOne,
     createOrUpdate,
-    deleteItem: (id, t) => Repository.deleteItem(id, usuario, t)
+    deleteItem: (id, t) => Repository.deleteItem(id, usuario, t),
+    findAllNombreApellidoUsuario
   };
 };

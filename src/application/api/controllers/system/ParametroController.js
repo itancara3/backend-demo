@@ -59,10 +59,10 @@ module.exports = function setupParametroController (services) {
   }
 
   return {
+    findAll,
     crear,
     findOne,
     actualizar,
-    findAll,
     eliminar
   };
 };
