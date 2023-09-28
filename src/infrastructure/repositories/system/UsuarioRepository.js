@@ -220,7 +220,6 @@ module.exports = function usuariosRepository (models, Sequelize) {
         as    : 'rol'
       }
     ];
-    console.log(query);
     const result = await usuario.findAndCountAll(query);
     return toJSON(result);
   }
@@ -417,7 +416,6 @@ module.exports = function usuariosRepository (models, Sequelize) {
   async function verificarCorreoElectronico (params) {
     const query = {};
     query.where = {};
-    console.log(params);
     if (params.email) {
       Object.assign(query.where, {
         email: params.email

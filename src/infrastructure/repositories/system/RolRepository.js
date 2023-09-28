@@ -65,7 +65,6 @@ module.exports = function rolesRepository (models, Sequelize) {
   }
 
   async function findAllByIdEmpresa (params = {}) {
-    // const query = getQuery(params);
     const query = {};
     query.attributes = attributes;
     query.where = {};

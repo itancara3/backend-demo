@@ -170,7 +170,8 @@ module.exports = function userService (repositories, helpers, res) {
         transaccion
       );
       if (existeUsuario) {
-        if (existeUsuario.correoElectronico === data.correoElectronico) {
+        console.log(existeUsuario);
+        if (existeUsuario.email === data.email) {
           throw new Error(
             `Ya se encuentra registrado un usuario con el correo electronico "${data.correoElectronico}".`
           );
