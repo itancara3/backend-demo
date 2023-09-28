@@ -31,8 +31,8 @@ module.exports = function setupClienteController (services) {
     try {
       const data = req.body;
       debug('creando entidad');
-      // data.userCreated = req.user.idUsuario; // corregir
-      data.userCreated = '7171272e-b31b-4c34-9220-9f535c958c5c';
+      console.log(req.user);
+      data.userCreated = req.user.idUsuario;
       const respuesta = await ClienteService.createOrUpdate(data);
       return res.status(200).send(new Respuesta('OK', Finalizado.OK, respuesta));
     } catch (error) {
@@ -45,7 +45,7 @@ module.exports = function setupClienteController (services) {
       debug('actualizando entidad');
       const data = req.body;
       data.id = req.params.id;
-      data._user_updated = req.user.id;
+      data._user_updated = req.user.idUsuario;
       const respuesta = await ClienteService.createOrUpdate(data);
       return res.status(200).send(new Respuesta('OK', Finalizado.OK, respuesta));
     } catch (error) {

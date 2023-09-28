@@ -9,7 +9,7 @@ module.exports = function setupSocio (api, controllers, middlewares) {
   api.post('/clientes/', ClienteController.crear);
   api.put('/clientes/:id', ClienteController.actualizar);
   api.delete('/clientes/:id', ClienteController.eliminar);
-  api.get('/parametros_tdi/:id', ClienteController.findAllTipoDocumentoIdentidad);
+  api.get('/tipodocumento_usuario/:id', ClienteController.findAllTipoDocumentoIdentidad);
 
   // api.get('/clientes', AuthMiddleware.verificarclientes(['clientes:listar']), ClienteController.listar);
   // api.get('/clientes/:id', AuthMiddleware.verificarclientes(['clientes:listar']), ClienteController.findOne);

@@ -2787,11 +2787,6 @@ jake@^10.6.1:
     filelist "^1.0.1"
     minimatch "^3.0.4"
 
-join@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.npmjs.org/join/-/join-3.0.0.tgz"
-  integrity sha512-RtCMVccL9rDfwqgQHpRx8ewxRDPkN2eoPbElrBJYMZIt0pTW2x8p2km4svpFmLb/sOPPRfD+ZwlJwYmONVVZzA==
-
 jose@^2.0.5:
   version "2.0.5"
   resolved "https://registry.npmjs.org/jose/-/jose-2.0.5.tgz"
