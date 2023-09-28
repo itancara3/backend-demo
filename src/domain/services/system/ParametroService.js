@@ -46,9 +46,9 @@ module.exports = function parametroService (repositories, helpers, res) {
   }
 
   return {
-    eliminar,
+    findAll,
     findOne,
     createOrUpdate,
-    findAll
+    eliminar
   };
 };

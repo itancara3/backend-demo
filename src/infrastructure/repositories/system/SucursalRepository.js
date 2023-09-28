@@ -140,16 +140,6 @@ module.exports = function sucursalRepository (models, Sequelize) {
   async function verificarNroSucursal (params) {
     const query = {};
     query.where = {};
-
-    // if (params.nroSucursal) {
-    //   query.where = {
-    //     nroSucursal: params.nroSucursal
-    //   };
-    // }
-
-    // if (params.id) {
-    //   query.where.id = params.id;
-    // }
     if (params.nroSucursal) {
       query.where = {
         nroSucursal: params.nroSucursal

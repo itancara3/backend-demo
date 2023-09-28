@@ -29,7 +29,7 @@ module.exports = function setupParametroController (services) {
 
   async function findOne (req, res) {
     try {
-      const data = { id: req.params.id };
+      const data = { idTipoDocumento: req.params.idTipoDocumento };
       const respuesta = await ParametroService.findOne(data);
       return res.status(200).send(new Respuesta('OK', Finalizado.OK, respuesta));
     } catch (error) {
@@ -59,10 +59,10 @@ module.exports = function setupParametroController (services) {
   }
 
   return {
+    findAll,
     crear,
     findOne,
     actualizar,
-    findAll,
     eliminar
   };
 };

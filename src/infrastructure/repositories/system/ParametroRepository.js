@@ -38,9 +38,24 @@ module.exports = function ParametroRepository (models, Sequelize) {
     return parametro.findAndCountAll(query);
   }
 
+  async function findOne (params = {}) {
+    const query = {};
+    query.attributes = attributes;
+    query.where = {};
+    query.where = {
+      nombre: params
+    };
+
+    const result = await parametro.findOne(query);
+    if (!result) {
+      return null;
+    }
+    return result.toJSON();
+  }
+
   return {
     findAll,
-    findOne        : params => Repository.findOne(params, parametro, attributes),
+    findOne,
     findById       : (id) => Repository.findById(id, parametro, attributes),
     createOrUpdate : (item, t) => Repository.createOrUpdate(item, parametro, t),
     deleteItem     : (id, t) => Repository.deleteItem(id, parametro, t)
