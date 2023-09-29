@@ -199,6 +199,33 @@ module.exports = function clienteRepository (models, Sequelize) {
     return parametro.findAndCountAll(query);
   }
 
+  async function verifyExistDataClient (params) {
+    const query = {};
+    query.where = {};
+
+    if (params.codigo) {
+      query.where = {
+        [Op.and]: [
+          { estado: 'ACTIVO' },
+          { codigo: params.codigo }
+        ]
+      };
+    }
+    if (params.nroDocumento) {
+      query.where = {
+        [Op.and]: [
+          { estado: 'ACTIVO' },
+          { nroDocumento: params.nroDocumento }
+        ]
+      };
+    }
+    const result = await cliente.findOne(query);
+    if (result) {
+      return result.toJSON();
+    }
+    return null;
+  }
+
   /*
   function findAllNombreApellidoUsuario (id = {}) {
     const query = {};
@@ -232,6 +259,7 @@ module.exports = function clienteRepository (models, Sequelize) {
     findOne,
     createOrUpdate : (item, t) => Repository.createOrUpdate(item, cliente, t),
     deleteItem     : (id, t) => Repository.deleteItem(id, cliente, t),
-    findAllTipoDocumentoIdentidad
+    findAllTipoDocumentoIdentidad,
+    verifyExistDataClient
   };
 };

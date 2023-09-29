@@ -3,6 +3,8 @@
 const debug = require('debug')('app:controller:REPORTE');
 const { Respuesta } = require('../../../lib/respuesta');
 const { Finalizado, HttpCodes } = require('../../../lib/globals');
+const clienteSchema = require('../../schemas/system/ClienteSchema');
+const validateObj = require('../../schemas/Validate');
 
 module.exports = function setupClienteController (services) {
   const { ClienteService } = services;
@@ -41,9 +43,13 @@ module.exports = function setupClienteController (services) {
   async function crear (req, res) {
     try {
       const data = req.body;
-      debug('creando entidad');
-      // data.userCreated = req.user.idUsuario; // corregir
-      data.userCreated = '7171272e-b31b-4c34-9220-9f535c958c5c';
+      debug('creando cliente');
+      const resposeValidation = await validateObj(data, clienteSchema, res);
+      if (resposeValidation) {
+        return res.status(200).send(new Respuesta('OK', Finalizado.OK, resposeValidation));
+      }
+
+      data.userCreated = req.user.idUsuario;
       const respuesta = await ClienteService.createOrUpdate(data);
       return res.status(200).send(new Respuesta('OK', Finalizado.OK, respuesta));
     } catch (error) {
@@ -53,10 +59,10 @@ module.exports = function setupClienteController (services) {
 
   async function actualizar (req, res) {
     try {
-      debug('actualizando entidad');
+      debug('actualizando cliente');
       const data = req.body;
       data.id = req.params.id;
-      data._user_updated = req.user.id;
+      data._user_updated = req.user.idUsuario;
       const respuesta = await ClienteService.createOrUpdate(data);
       return res.status(200).send(new Respuesta('OK', Finalizado.OK, respuesta));
     } catch (error) {
@@ -67,7 +73,7 @@ module.exports = function setupClienteController (services) {
   async function eliminar (req, res) {
     try {
       const { id } = req.params;
-      debug('Eliminando entidad');
+      debug('Eliminando cliente');
       const respuesta = await ClienteService.deleteItem(id);
       return res.status(200).send(new Respuesta('OK', Finalizado.OK, respuesta));
     } catch (error) {

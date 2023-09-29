@@ -28,7 +28,7 @@ module.exports = function setupEmpresaController (services) {
   async function crear (req, res) {
     try {
       const data = req.body;
-      debug('creando entidad');
+      debug('creando empresa');
       // data.userCreated = req.user.idUsuario;
       const respuesta = await EmpresaService.createOrUpdate(data);
       return res.status(200).send(new Respuesta('OK', Finalizado.OK, respuesta));
@@ -53,7 +53,7 @@ module.exports = function setupEmpresaController (services) {
   async function eliminar (req, res) {
     try {
       const { id } = req.params;
-      debug('Eliminando entidad');
+      debug('Eliminando empresa');
       const respuesta = await EmpresaService.deleteItem(id);
       return res.status(200).send(new Respuesta('OK', Finalizado.OK, respuesta));
     } catch (error) {

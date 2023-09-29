@@ -3,6 +3,8 @@
 const debug = require('debug')('app:controller:auth');
 const { Respuesta } = require('../../../lib/respuesta');
 const { Finalizado, HttpCodes } = require('../../../lib/globals');
+const sucursalSchema = require('../../schemas/system/SucursalSchema');
+const validateObj = require('../../schemas/Validate');
 
 module.exports = function setupSucursalController (services) {
   const { SucursalService } = services;
@@ -38,6 +40,11 @@ module.exports = function setupSucursalController (services) {
   async function crear (req, res) {
     try {
       const data = req.body;
+      const resposeValidation = await validateObj(data, sucursalSchema, res);
+      if (resposeValidation) {
+        return res.status(200).send(new Respuesta('OK', Finalizado.OK, resposeValidation));
+      }
+
       data.userCreated = req.user.idUsuario;
       const respuesta = await SucursalService.createOrUpdate(data);
       return res.status(200).send(new Respuesta('OK', Finalizado.OK, respuesta));
