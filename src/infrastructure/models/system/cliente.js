@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     complemento: {
       type      : DataTypes.STRING(4),
-      allowNull : false,
+      allowNull : true,
       field     : 'complemento'
     },
     nombreFiscal: {

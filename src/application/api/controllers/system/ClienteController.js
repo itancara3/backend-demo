@@ -43,12 +43,13 @@ module.exports = function setupClienteController (services) {
   async function crear (req, res) {
     try {
       const data = req.body;
+      // console.log(data);
       debug('creando cliente');
       const resposeValidation = await validateObj(data, clienteSchema, res);
       if (resposeValidation) {
         return res.status(200).send(new Respuesta('OK', Finalizado.OK, resposeValidation));
       }
-
+      console.log(data);
       data.userCreated = req.user.idUsuario;
       const respuesta = await ClienteService.createOrUpdate(data);
       return res.status(200).send(new Respuesta('OK', Finalizado.OK, respuesta));

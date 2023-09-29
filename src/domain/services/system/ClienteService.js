@@ -39,18 +39,18 @@ module.exports = function clienteService (repositories, helpers, res) {
 
   async function createOrUpdate (data) {
     debug('Crear o actualizar cliente');
-    const { tipoDocumento } = data;
+    // const { tipoDocumento } = data;
     let cliente;
     let msgtexto = '| ';
-    console.log(data);
+    // console.log(data);
     try {
-      if (tipoDocumento) {
-        const result = await ParametroRepository.findOneByNombre(tipoDocumento);
-        if (result.id !== data.idTipoDocumento) {
-          data.idTipoDocumento = result.id;
-        }
-      }
-      cliente = await ClienteRepository.createOrUpdate(data);
+      // if (tipoDocumento) {
+      //   const result = await ParametroRepository.findOneByNombre(tipoDocumento);
+      //   if (result.id !== data.idTipoDocumento) {
+      //     data.idTipoDocumento = result.id;
+      //   }
+      // }
+      // cliente = await ClienteRepository.createOrUpdate(data);
       const msg = await this.verifyClienteRegistrationExists(data);
       if (!Array.isArray(msg) || msg.length === 0) {
         cliente = await ClienteRepository.createOrUpdate(data);
