@@ -31,13 +31,47 @@ module.exports = function clienteService (repositories, helpers, res) {
   async function createOrUpdate (data) {
     debug('Crear o actualizar cliente');
     let cliente;
+    let msgtexto = '| ';
     try {
-      cliente = await ClienteRepository.createOrUpdate(data);
-      return cliente;
+      const msg = await this.verifyClienteRegistrationExists(data);
+      if (!Array.isArray(msg) || msg.length === 0) {
+        cliente = await ClienteRepository.createOrUpdate(data);
+        return cliente;
+      } else {
+        msg.forEach(function (v) { msgtexto += v; msgtexto += ' | '; });
+        throw new Error(
+          'Ya se encuentra registrado el cliente: ' + msgtexto
+        );
+      }
     } catch (err) {
       throw new ErrorApp(err.message, 400);
     }
   }
+
+  const verifyClienteRegistrationExists = async (data) => {
+    const msg = [];
+    const existeCodigo = await ClienteRepository.verifyExistDataClient({
+      codigo: data.codigo
+    });
+    const existeNroDocumento = await ClienteRepository.verifyExistDataClient({
+      nroDocumento: data.nroDocumento
+    });
+    if (existeCodigo) {
+      if (existeCodigo.codigo === data.codigo) {
+        if (!data.id || data.id !== existeCodigo.id) {
+          msg.push(`con el código: "${data.codigo}"`);
+        }
+      }
+    }
+    if (existeNroDocumento) {
+      if (existeNroDocumento.nroDocumento === data.nroDocumento) {
+        if (!data.id || data.id !== existeNroDocumento.id) {
+          msg.push(`con el número de documento: "${data.nroDocumento}"`);
+        }
+      }
+    }
+    return msg;
+  };
 
   async function deleteItem (id) {
     debug('Eliminando cliente', id);
@@ -67,6 +101,7 @@ module.exports = function clienteService (repositories, helpers, res) {
     findOne,
     createOrUpdate,
     deleteItem,
-    findAllTipoDocumentoIdentidad
+    findAllTipoDocumentoIdentidad,
+    verifyClienteRegistrationExists
   };
 };

@@ -3,11 +3,9 @@
 const debug = require('debug')('app:controller:REPORTE');
 const { Respuesta } = require('../../../lib/respuesta');
 const { Finalizado, HttpCodes } = require('../../../lib/globals');
-const ValidateJS = require('validate.js');
-const EmpresaSchema = require('../../schemas/system/EmpresaSchema');
 
 module.exports = function setupEmpresaController (services) {
-  const { EmpresaService, ValidateService } = services;
+  const { EmpresaService } = services;
 
   async function listar (req, res) {
     try {
@@ -29,17 +27,11 @@ module.exports = function setupEmpresaController (services) {
 
   async function crear (req, res) {
     try {
-      ValidateService.calcular(2, 3).then((result) => {
-        console.log(result);
-      }, (error) => {
-        console.log(error);
-      });
-      /*
       const data = req.body;
-      debug('creando entidad');
+      debug('creando empresa');
       // data.userCreated = req.user.idUsuario;
       const respuesta = await EmpresaService.createOrUpdate(data);
-      return res.status(200).send(new Respuesta('OK', Finalizado.OK, respuesta)); */
+      return res.status(200).send(new Respuesta('OK', Finalizado.OK, respuesta));
     } catch (error) {
       return res.status(error.httpCode || HttpCodes.userError).json(new Respuesta(error.message, Finalizado.FAIL));
     }
@@ -61,7 +53,7 @@ module.exports = function setupEmpresaController (services) {
   async function eliminar (req, res) {
     try {
       const { id } = req.params;
-      debug('Eliminando entidad');
+      debug('Eliminando empresa');
       const respuesta = await EmpresaService.deleteItem(id);
       return res.status(200).send(new Respuesta('OK', Finalizado.OK, respuesta));
     } catch (error) {

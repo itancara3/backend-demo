@@ -54,19 +54,22 @@ module.exports = (sequelize, DataTypes) => {
       field     : 'nombre_comercial'
     },
     direccion: {
-      type      : DataTypes.STRING(150),
-      allowNull : false,
-      field     : 'direccion'
+      type         : DataTypes.STRING(150),
+      allowNull    : true,
+      defaultValue : false,
+      field        : 'direccion'
     },
     zona: {
-      type      : DataTypes.STRING(50),
-      allowNull : false,
-      field     : 'zona'
+      type         : DataTypes.STRING(50),
+      allowNull    : true,
+      defaultValue : false,
+      field        : 'zona'
     },
     ciudad: {
-      type      : DataTypes.STRING(50),
-      allowNull : false,
-      field     : 'ciudad'
+      type         : DataTypes.STRING(50),
+      allowNull    : true,
+      defaultValue : false,
+      field        : 'ciudad'
     },
     departamento: {
       type      : DataTypes.STRING(50),
@@ -136,10 +139,11 @@ module.exports = (sequelize, DataTypes) => {
       field        : 'linea_credito_monto'
     },
     estadoCreditoMonto: {
-      type      : DataTypes.BOOLEAN,
-      allowNull : false,
-      xlabel    : lang.t('fields.estadoCreditoMonto'),
-      field     : 'estado_credito_monto'
+      type         : DataTypes.BOOLEAN,
+      allowNull    : true,
+      defaultValue : false,
+      xlabel       : lang.t('fields.estadoCreditoMonto'),
+      field        : 'estado_credito_monto'
     },
     lineaCreditoNroVentas: {
       type         : DataTypes.INTEGER,
@@ -148,10 +152,11 @@ module.exports = (sequelize, DataTypes) => {
       field        : 'linea_credito_nro_ventas'
     },
     estadoCreditoNroVentas: {
-      type      : DataTypes.BOOLEAN,
-      allowNull : false,
-      xlabel    : lang.t('fields.estadoCreditoNroVentas'),
-      field     : 'estado_credito_nro_ventas'
+      type         : DataTypes.BOOLEAN,
+      allowNull    : true,
+      defaultValue : false,
+      xlabel       : lang.t('fields.estadoCreditoNroVentas'),
+      field        : 'estado_credito_nro_ventas'
     },
     lineaCreditoDias: {
       type         : DataTypes.INTEGER,
@@ -160,10 +165,11 @@ module.exports = (sequelize, DataTypes) => {
       field        : 'linea_credito_dias'
     },
     estadoCreditoDias: {
-      type      : DataTypes.BOOLEAN,
-      allowNull : false,
-      xlabel    : lang.t('fields.estadoCreditoDias'),
-      field     : 'estado_credito_dias'
+      type         : DataTypes.BOOLEAN,
+      allowNull    : true,
+      defaultValue : false,
+      xlabel       : lang.t('fields.estadoCreditoDias'),
+      field        : 'estado_credito_dias'
     },
     cuentaContable: {
       type      : DataTypes.STRING(15),
@@ -185,9 +191,10 @@ module.exports = (sequelize, DataTypes) => {
       field     : 'asesor_ventas'
     },
     bloquear: {
-      type      : DataTypes.BOOLEAN,
-      allowNull : false,
-      field     : 'bloquear'
+      type         : DataTypes.BOOLEAN,
+      allowNull    : true,
+      defaultValue : false,
+      field        : 'bloquear'
     },
     estado: {
       type         : DataTypes.ENUM,
