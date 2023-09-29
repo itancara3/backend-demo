@@ -5,6 +5,7 @@ const Sequelize = require('sequelize');
 const db = require('../../common/config/db');
 
 async function createOrUpdate (object, model, t) {
+  // console.log(object);
   const cond = {
     where: {
       id: object.id || null
@@ -12,7 +13,7 @@ async function createOrUpdate (object, model, t) {
   };
 
   const item = await model.findOne(cond);
-
+  // console.log(item);
   if (item) {
     object.updatedAt = new Date();
     let updated;

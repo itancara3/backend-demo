@@ -32,7 +32,7 @@ function permissions (context, permission) {
 async function generateToken (Parametro, data) {
   // Generando token
   let token;
-  const { descripcion: tiempoToken } = await Parametro.findOne({ grupo: 'CONFIG', codigo: 'TK' });
+  const { descripcion: tiempoToken } = await Parametro.findOneToken({ grupo: 'CONFIG', codigo: 'TK' });
   let exp = tiempoToken;
   if (exp) {
     console.log('Tiempo del token en minutos:', exp);

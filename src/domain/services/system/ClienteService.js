@@ -25,7 +25,7 @@ module.exports = function clienteService (repositories, helpers, res) {
     }
   }
 
-  async function findOne (params) {
+  async function mostrar (params) {
     try {
       const cliente = await ClienteRepository.findOne(params);
       if (!cliente) {
@@ -39,9 +39,17 @@ module.exports = function clienteService (repositories, helpers, res) {
 
   async function createOrUpdate (data) {
     debug('Crear o actualizar cliente');
+    const { tipoDocumento } = data;
     let cliente;
     try {
+      if (tipoDocumento) {
+        const result = await ParametroRepository.findOneByNombre(tipoDocumento);
+        if (result.id !== data.idTipoDocumento) {
+          data.idTipoDocumento = result.id;
+        }
+      }
       cliente = await ClienteRepository.createOrUpdate(data);
+      // cliente.idTipoDocumento = tipoDocumento.idTipoDocumento;
       return cliente;
     } catch (err) {
       throw new ErrorApp(err.message, 400);
@@ -71,18 +79,18 @@ module.exports = function clienteService (repositories, helpers, res) {
     }
   }
 
-  async function mostrar (id) {
-    try {
-      return ParametroRepository.findOne({ id });
-    } catch (error) {
-      throw new ErrorApp(error.message, 400);
-    }
-  }
+  // async function mostrar (id) {
+  //   try {
+  //     return ParametroRepository.findOne({ id });
+  //   } catch (error) {
+  //     throw new ErrorApp(error.message, 400);
+  //   }
+  // }
 
   return {
     listar,
     listarPorEmpresa,
-    findOne,
+    // findOne,
     createOrUpdate,
     deleteItem,
     findAllTipoDocumentoIdentidad,

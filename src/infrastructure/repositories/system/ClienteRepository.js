@@ -123,7 +123,6 @@ module.exports = function clienteRepository (models, Sequelize) {
       idEmpresa: params
     };
     const result = await cliente.findAndCountAll(query);
-    console.log(result);
     return toJSON(result);
   }
 
@@ -165,9 +164,15 @@ module.exports = function clienteRepository (models, Sequelize) {
       'bloquear',
       'estado'
     ];
+
+    query.include = {
+      attributes : ['id', 'codigo', 'grupo', 'nombre', 'descripcion', 'estado'],
+      model      : parametro,
+      as         : 'parametro'
+    };
     query.where = {};
-    if (params.id) {
-      query.where.id = params.id;
+    if (params) {
+      query.where = { id: params };
     }
     const result = await cliente.findOne(query);
     if (!result) {

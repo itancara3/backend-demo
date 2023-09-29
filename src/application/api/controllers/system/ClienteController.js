@@ -26,10 +26,12 @@ module.exports = function setupClienteController (services) {
     }
   }
 
-  async function findOne (req, res) {
+  async function mostrar (req, res) {
     try {
-      const data = { id: req.params.id };
-      const respuesta = await ClienteService.findOne(data);
+      // const data = req.params;
+      const { id } = req.params;
+      const respuesta = await ClienteService.mostrar(id);
+      // const respuesta = await ClienteService.mostrar(data);
       return res.status(200).send(new Respuesta('OK', Finalizado.OK, respuesta));
     } catch (error) {
       return res.status(error.httpCode || HttpCodes.userError).json(new Respuesta(error.message, Finalizado.FAIL));
@@ -86,7 +88,7 @@ module.exports = function setupClienteController (services) {
   return {
     listar,
     listarPorEmpresa,
-    findOne,
+    mostrar,
     crear,
     actualizar,
     eliminar,

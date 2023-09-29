@@ -150,6 +150,7 @@ module.exports = function userService (repositories, helpers, res) {
   }
 
   async function createOrUpdate (data) {
+    console.log(data);
     let transaccion;
     try {
       transaccion = await transaction.create();
@@ -170,7 +171,6 @@ module.exports = function userService (repositories, helpers, res) {
         transaccion
       );
       if (existeUsuario) {
-        console.log(existeUsuario);
         if (existeUsuario.email === data.email) {
           throw new Error(
             `Ya se encuentra registrado un usuario con el correo electronico "${data.correoElectronico}".`

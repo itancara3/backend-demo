@@ -245,6 +245,7 @@ module.exports = function authService (repositories, helpers, res) {
     try {
       usuario.menu = await getMenusRoles(usuario.rol);
       // usuario.permisos = await getPermisos(usuario.rol);
+      // console.log(usuario);
       usuario.token = await generateToken(ParametroRepository, {
         // idRoles           : usuario.rol.map((x) => x.id),
         idRol     : usuario.idRol,

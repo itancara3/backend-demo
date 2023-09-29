@@ -5,11 +5,12 @@ module.exports = function setupSocio (api, controllers, middlewares) {
   const { AuthMiddleware } = middlewares;
 
   api.get('/clientes', ClienteController.listar);
-  api.get('/clientes/:id', ClienteController.findOne);
+  api.get('/clientes/empresa/:id', ClienteController.listar);
+  api.get('/clientes/:id', ClienteController.mostrar);
   api.post('/clientes/', ClienteController.crear);
   api.put('/clientes/:id', ClienteController.actualizar);
   api.delete('/clientes/:id', ClienteController.eliminar);
-  api.get('/parametros_tdi/:id', ClienteController.findAllTipoDocumentoIdentidad);
+  api.get('/tipoDocumento_usuario/:id', ClienteController.findAllTipoDocumentoIdentidad);
 
   // api.get('/clientes', AuthMiddleware.verificarclientes(['clientes:listar']), ClienteController.listar);
   // api.get('/clientes/:id', AuthMiddleware.verificarclientes(['clientes:listar']), ClienteController.findOne);
